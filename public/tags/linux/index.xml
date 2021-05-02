@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>linux on home</title>
+    <link>/tags/linux/</link>
+    <description>Recent content in linux on home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>yihsun1992@gmail.com (呂奕珣)</managingEditor>
+    <webMaster>yihsun1992@gmail.com (呂奕珣)</webMaster>
+    <copyright>&amp;copy;{year}, All Rights Reserved</copyright>
+    <lastBuildDate>Sat, 30 Jan 2021 05:23:00 +0800</lastBuildDate>
+    
+        <atom:link href="/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    
+
+      
+      <item>
+        <title>assambly</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/assambly/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/assambly/</guid>
+        <description>注意要點 這種關於rip基底做偏移要注意%rip要帶入下一行指令的位置 0x1&amp;ndash;mov 0x2ee6(%rip),%rdx 這裡%rip指向0x1 但執行mov 0x2ee6(%rip),%rdx</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>assambly</category>
+            
+          
+            
+              <category>gcc</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>c inline assambly and system call</title>
+        <link>/posts/linux/gcc/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/linux/gcc/</guid>
+        <description>簡介 這裡我們要學到如何利用c語言直接呼叫system call做到printf顯示的功能 範例 實做直接呼叫linux system code 根據1-1表格找到的資訊</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>assambly</category>
+            
+          
+            
+              <category>gcc</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>canary analysis</title>
+        <link>/posts/linux/canary/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/linux/canary/</guid>
+        <description>https://ctf-wiki.org/pwn/linux/mitigation/canary/ 你的程式 https://hardenedlinux.github.io/2016/11/27/canary.html https://stackoverflow.com/questions/10325713/why-does-this-memory-address-fs0x28-fs0x28-have-a-random-value 範例 題目 下面程式會觸發smashing detected請修好下面的程式 ** stack smashing detected ***: terminated 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 #include&amp;lt;stdio.h&amp;gt;int</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>assambly</category>
+            
+          
+            
+              <category>gcc</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+            
+              <category>安全</category>
+            
+          
+            
+              <category>pwn</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>ftrace</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</guid>
+        <description>介紹 ftrace是Steven Rostedt開發trace-cmd也是他開發的,接下來用trace-cmd示範 細節文件請看ftrace.tx</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+            
+              <category>核心追蹤</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+            
+              <category>安全</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>linux security module</title>
+        <link>/posts/linux/lcm/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/linux/lcm/</guid>
+        <description>LSM_HOOK_INIT與call_int_hook是linux kernel 的macro負責處理 舉例ptrace安全處理 security_ptrace_access_check call_int_hook LSM_HOOK_INIT(ptrace_access_check, cap_ptrace_access_check) ftrace ptrace attach resault 1 2 3 cap_ptrace_access_check &amp;lt;-- security_ptrace_access_check</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>安全</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>執行檔案過程</title>
+        <link>/posts/linux/exec/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/linux/exec/</guid>
+        <description>這個寫的很猛 https://web.archive.org/web/20201107223830/http://dbp-consulting.com/tutorials/debugging/linuxProgramStartup.html</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>linux</category>
+            
+          
+            
+              <category>系統程式</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>system call過程</title>
+        <link>/posts/linux/systemcall/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        
+        <guid>/posts/linux/systemcall/</guid>
+        <description>linux v5.10 x64作為範例 為什麼syscal A.2 AMD64 Linux Kernel Conventions syscall_init(void) wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64); entry_SYSCALL_64 do_syscall_64 sys_call_tablenr Invalid system call number:38 為什麼syscall不符合abi? syscall macro 接下來實驗SYSCALL_DEFI</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>assambly</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>

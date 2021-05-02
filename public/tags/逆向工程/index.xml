@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>逆向工程 on home</title>
+    <link>/tags/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/</link>
+    <description>Recent content in 逆向工程 on home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>yihsun1992@gmail.com (呂奕珣)</managingEditor>
+    <webMaster>yihsun1992@gmail.com (呂奕珣)</webMaster>
+    <copyright>&amp;copy;{year}, All Rights Reserved</copyright>
+    <lastBuildDate>Sat, 30 Jan 2021 05:23:00 +0800</lastBuildDate>
+    
+        <atom:link href="/tags/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    
+
+      
+      <item>
+        <title>ftrace</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</guid>
+        <description>介紹 ftrace是Steven Rostedt開發trace-cmd也是他開發的,接下來用trace-cmd示範 細節文件請看ftrace.tx</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+            
+              <category>核心追蹤</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+            
+              <category>安全</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>gdb</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/gdb/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/gdb/</guid>
+        <description>介紹 GDB(GNU Debugger)Richard Stallman成立Free Software Foundation debug format 目前linux elf的debug format是DWARF所以我們先只探討DWARF, 當編譯的時候</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+            
+              <category>安全</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>godbolt</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/godbolt/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/godbolt/</guid>
+        <description>介紹 godbolt 就是給你看,各個語言,編譯器,不同參數 出來的機械碼,組合語言,執行 範例 可以看到xor %eax,%eax 的機械碼拉與c語言的組合語言 Output:compile to binary,x86-64 gcc 10.2 1 2 3 4 5</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>objdump</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/objdump/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/objdump/</guid>
+        <description>介紹 請google,細節請直接看--help 想看組合語言與機械碼？ objdump -d a.out</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>shellcode</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/shellcode/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/shellcode/</guid>
+        <description>http://shell-storm.org/shellcode/</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>逆向工程</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/rv/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/rv/</guid>
+        <description>工具 靜態分析程式 Binwalk Ghidra 動態分析程序 gdb Z3 Theorem Prover 超猛拉 分析linux核心 User-Mode Linux bpftrace ftrace相關工具 基礎知識 microcode 比機械碼還底層 Meltdown Spectre 機械碼編碼方法 inte</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>z3</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/z3/</link>
+        <pubDate>Mon, 18 Nov 2019 21:00:06 +0900</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Mon, 18 Nov 2019 21:00:06 +0900</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/z3/</guid>
+        <description>z3? smt? 應用</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>

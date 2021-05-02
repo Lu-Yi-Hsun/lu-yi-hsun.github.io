@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>安全 on home</title>
+    <link>/tags/%E5%AE%89%E5%85%A8/</link>
+    <description>Recent content in 安全 on home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>yihsun1992@gmail.com (呂奕珣)</managingEditor>
+    <webMaster>yihsun1992@gmail.com (呂奕珣)</webMaster>
+    <copyright>&amp;copy;{year}, All Rights Reserved</copyright>
+    <lastBuildDate>Sat, 30 Jan 2021 05:23:00 +0800</lastBuildDate>
+    
+        <atom:link href="/tags/%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
+    
+
+      
+      <item>
+        <title>canary analysis</title>
+        <link>/posts/linux/canary/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/linux/canary/</guid>
+        <description>https://ctf-wiki.org/pwn/linux/mitigation/canary/ 你的程式 https://hardenedlinux.github.io/2016/11/27/canary.html https://stackoverflow.com/questions/10325713/why-does-this-memory-address-fs0x28-fs0x28-have-a-random-value 範例 題目 下面程式會觸發smashing detected請修好下面的程式 ** stack smashing detected ***: terminated 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 #include&amp;lt;stdio.h&amp;gt;int</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>assambly</category>
+            
+          
+            
+              <category>gcc</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+            
+              <category>安全</category>
+            
+          
+            
+              <category>pwn</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>elf</title>
+        <link>/posts/linux/elf/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/linux/elf/</guid>
+        <description>接下來以linux v5.10 64bit elf作範例 簡介 Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔案,可以搭配文件elf.pdf與原始碼elf.h一起看</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>binary</category>
+            
+          
+            
+              <category>系統程式</category>
+            
+          
+            
+              <category>安全</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>ftrace</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</guid>
+        <description>介紹 ftrace是Steven Rostedt開發trace-cmd也是他開發的,接下來用trace-cmd示範 細節文件請看ftrace.tx</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+            
+              <category>核心追蹤</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+            
+              <category>安全</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>gdb</title>
+        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/gdb/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/gdb/</guid>
+        <description>介紹 GDB(GNU Debugger)Richard Stallman成立Free Software Foundation debug format 目前linux elf的debug format是DWARF所以我們先只探討DWARF, 當編譯的時候</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>逆向工程</category>
+            
+          
+            
+              <category>安全</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>linux security module</title>
+        <link>/posts/linux/lcm/</link>
+        <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
+        <guid>/posts/linux/lcm/</guid>
+        <description>LSM_HOOK_INIT與call_int_hook是linux kernel 的macro負責處理 舉例ptrace安全處理 security_ptrace_access_check call_int_hook LSM_HOOK_INIT(ptrace_access_check, cap_ptrace_access_check) ftrace ptrace attach resault 1 2 3 cap_ptrace_access_check &amp;lt;-- security_ptrace_access_check</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>安全</category>
+            
+          
+            
+              <category>linux</category>
+            
+          
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>
