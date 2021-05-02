@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>amoji on home</title>
+    <link>http://example.org/tags/amoji/</link>
+    <description>Recent content in amoji on home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>yihsun1992@gmail.com (呂奕珣)</managingEditor>
+    <webMaster>yihsun1992@gmail.com (呂奕珣)</webMaster>
+    <copyright>&amp;copy;{year}, All Rights Reserved</copyright>
+    <lastBuildDate>Fri, 29 Jan 2021 18:00:00 +0800</lastBuildDate>
+    
+        <atom:link href="http://example.org/tags/amoji/index.xml" rel="self" type="application/rss+xml" />
+    
+
+      
+      <item>
+        <title>Emoji Support</title>
+        <link>http://example.org/posts/emoji-support/</link>
+        <pubDate>Fri, 29 Jan 2021 18:00:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Fri, 29 Jan 2021 18:00:00 +0800</atom:modified>
+        <guid>http://example.org/posts/emoji-support/</guid>
+        <description>如果無法顯示emoji 請安裝 ARCH Ubuntu sudo pacman -S noto-fonts-emoji sudo apt-get install noto-fonts-emoji &#39;use strict&#39;; var containerId = JSON.parse(&#34;\&#34;a85f19a55271d857\&#34;&#34;); var containerElem = document.getElementById(containerId); var tabLinks = null; var tabContents = null; var ids = []; if (containerElem) { tabLinks = containerElem.querySelectorAll(&#39;.tab__link&#39;); tabContents = containerElem.querySelectorAll(&#39;.tab__content&#39;); } for (var i = 0; i 0) { tabContents[0].style.display = &#39;block&#39;; }</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>emoji</category>
+            
+          
+            
+              <category>gamoji</category>
+            
+          
+            
+              <category>namoji</category>
+            
+          
+            
+              <category>bamoji</category>
+            
+          
+            
+              <category>amoji</category>
+            
+          
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>
