@@ -67,6 +67,9 @@ ET_DYN
 > — <cite>Rob Pike[^app]</cite>
 
 
+## 進階探討
+https://web.archive.org/web/20210415124218/http://www.muppetlabs.com/~breadbox/software/tiny/teensy.html
+
 
 ## 參考
 

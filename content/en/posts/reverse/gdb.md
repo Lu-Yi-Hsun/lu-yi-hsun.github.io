@@ -22,10 +22,9 @@ GDB(GNU Debugger)`Richard Stallman`成立`Free Software Foundation`
 gcc main.c -g
 ```
 
-接下來實驗搭配gdb-dashboard請先安裝
-到家目錄`cd ~` 下載`.gdbinit`(`wget -P ~ https://git.io/.gdbinit`)
+接下來實驗搭配gdb-dashboard套件請先安裝
+
 ```bash
-cd ~
 wget -P ~ https://git.io/.gdbinit
 ```
 
@@ -43,9 +42,6 @@ wget -P ~ https://git.io/.gdbinit
 最原始版本gdb可以使用的指令
 
 進入gdb後
-- `set disable-randomization off` `這個指令可以gdb隨機載入執行檔到不同記憶體位置`
-  - 作業系統因為有ASLR的安全機制會把ELF File Types Dynamic(`ET_DYN`)型態的執行檔(又稱PIC[^pic]或PIE[^pie])載入到隨機的虛擬記憶體位置,但gdb會為了好追蹤偷偷關閉ASLR載入到固定的記憶體位置
-- `r` 開始執行/重新執行,會一直跑下去直到程式中斷或是結束跑完
 - `start` 開始並且中斷在main函數,沒有`symbol table`無法使用
 - `starti` 在沒有`symbol table`之下,我們只能從頭看組合語言,所以我們需要`starti`從第一行組合語言開始並且中斷
 - `n` 執行下一行原始碼,遇到function call不會中斷,等到function call執行完成才中斷
@@ -54,12 +50,16 @@ wget -P ~ https://git.io/.gdbinit
 - `si` 執行下一行組合語言,遇到function call會進入並且中斷
 - `b main` 設定中斷在`main`函數(`main`名稱是紀錄在symbol table`readelf -s 執行檔名`),如果gcc設定`-s`代表刪除程式所有`symbol table`,你就無法找到main的位置
 - `b *0x123` 設定中斷在`0x123`記憶體位置
-- `catch` 可以中斷再特定的
-  - sss
-- `info b` 列出已經設定哪些中斷
-- `d 1` 刪除Num 1的中斷
 - `j *0x123` 跳到`0x123`記憶體位置並且會`馬上`繼續執行
 - `c` 持續執行等到下一個中斷`b`出現
+- `info b` 列出已經設定哪些中斷
+- `d 1` 刪除Num 1的中斷
+- `r` 開始執行/重新執行,會一直跑下去直到程式中斷或是結束跑完
+- `set disable-randomization off` `這個指令可以gdb隨機載入執行檔到不同記憶體位置`
+  - 作業系統因為有ASLR的安全機制會把ELF File Types Dynamic(`ET_DYN`)型態的執行檔(又稱PIC[^pic]或PIE[^pie])載入到隨機的虛擬記憶體位置,但gdb會為了好追蹤偷偷關閉ASLR載入到固定的記憶體位置
+- `catch`  
+  - `syscall`  
+    - `write` `catch syscall write`可以暫停當你呼叫write syscall之後
 - `q`離開gdb
 - `handle SIGTSTP nostop nopass print` 這裡`SIGTSTP`可以改成你要設定的訊號(`Control+C發送SIGINT`,`Control+Z發送SIGTSTP`),或是`all`全部signal一起設定
   - `stop`/`nostop` 設定收到SIGTSTP訊號gdb要停止嗎？ 
@@ -71,7 +71,64 @@ wget -P ~ https://git.io/.gdbinit
 > [^pie]:position-independent executable 
 > [^pic]:position-independent code
 
+#### 原始碼進入點都是main?
+[點我下載範例檔案go-elf](../go-elf)
+
+在debug此檔案`go-elf`到底要中斷在哪裡才能進入主程式.
+
+這個範例希望讓大家體會這個`main`名稱只是約定好的,不同程式語言它可能自己定義
+
+提示
+```
+readelf -s go-elf 
+```
+{{< expand "答案" >}}
+
+main.main 才是go語言編譯出來的 main進入點
+```
+b main.main
+```
+
+{{< /expand >}}
+
+#### 有趣的程式
+
+[點我下載x86_64-abi](https://refspecs.linuxfoundation.org/elf/x86_64-abi-0.99.pdf)
+
+- 希望學到簡單c inline assambly
+- 希望了解某些暫存器在system v abi的規範下有特殊用途
+- 不用main
+- 不用prinf libary
+- 輸出hello, world!
+```c:main.c
+void print_asm(char *arg1,long int size){
+    __asm__ volatile(
+        "mov $1, %%rax\n\t"    //system call 編碼
+        "mov $1, %%rdi\n\t"   //arg1:fd 設定1 代表把字串輸入/dev/stdout 這裡就是螢幕輸出地方
+        "mov %0,%%rsi\n\t"   //arg2:輸入字串記憶體位置
+        "mov %1, %%rdx\n\t" //arg3:這裡輸入字串長度 ,可以跟記憶體位置搭配來輸出到螢幕
+        "syscall"//x64 要用此呼叫systemcall 不能在使用int $0x80
+        :                      //需要輸出的參數,沒有用到
+        :"m" (arg1),"m" (size) //需要輸入的參數,並且紀錄在記憶體就好
+    );
+}
+void _start() {
+    char *d="hello, world!\n";
+    print_asm(d,14);
+    asm("movl $1,%eax;"
+        "xorl %ebx,%ebx;"
+        "int  $0x80"
+    );
+}
+```
+```
+gcc -nostdlib main.c
+```
+
 #### handle signal範例
+
+
+- 了解到被追蹤的程式的signal,會被追蹤者掌控
 
 ```signal.c
 #include <unistd.h>
@@ -117,7 +174,7 @@ sudo gdb --pid 123
 
 <center>實驗</center>
 {{<notice info>}}
-gdb處理(`handle`)`signal.c`收到CTRL+Z(`SIGTSTP`)訊號的時候GDB不停止(`nostop`)不轉傳給`signal.c`(`nopass`)但是要在GDB介面輸出訊息(`print`)
+gdb處理(`handle`)`signal.c`收到`CTRL+Z`(`SIGTSTP`)訊號的時候GDB不停止(`nostop`)不轉傳給`signal.c`(`nopass`)但是要在GDB介面輸出訊息(`print`)
 {{</notice>}}
 
 1.在gdb的終端機輸入
@@ -152,8 +209,6 @@ dashboard memory watch 0x123 10
 
 
 ## Debug Python by GDB
-
- 
 
 剛才的指令我們已經學會如何動態分析編譯語言(`Compiled language`)接下來會教學如何分析直譯語言(`Interpreted language`)我們以python為範例
 
