@@ -115,11 +115,11 @@ void print_asm(char *arg1,long int size){
 void _start() {
     char *d="hello, world!\n";
     print_asm(d,14);
-    asm("movl $1,%eax;"
-        "xorl %ebx,%ebx;"
-        "int  $0x80"
+    asm("mov $60,%rax\n\t"
+        "syscall\n\t"
     );
 }
+
 ```
 ```
 gcc -nostdlib main.c
