@@ -22,7 +22,7 @@ GDB(GNU Debugger)`Richard Stallman`成立`Free Software Foundation`
 gcc main.c -g
 ```
 
-接下來實驗搭配gdb-dashboard套件請先安裝
+接下來實驗搭配gdb-dashboard套件比較美觀請先安裝
 
 ```bash
 wget -P ~ https://git.io/.gdbinit
@@ -55,8 +55,6 @@ wget -P ~ https://git.io/.gdbinit
 - `info b` 列出已經設定哪些中斷
 - `d 1` 刪除Num 1的中斷
 - `r` 開始執行/重新執行,會一直跑下去直到程式中斷或是結束跑完
-- `set disable-randomization off` `這個指令可以gdb隨機載入執行檔到不同記憶體位置`
-  - 作業系統因為有ASLR的安全機制會把ELF File Types Dynamic(`ET_DYN`)型態的執行檔(又稱PIC[^pic]或PIE[^pie])載入到隨機的虛擬記憶體位置,但gdb會為了好追蹤偷偷關閉ASLR載入到固定的記憶體位置
 - `catch`  
   - `syscall`  
     - `write` `catch syscall write`可以暫停當你呼叫write syscall之後
@@ -66,6 +64,8 @@ wget -P ~ https://git.io/.gdbinit
   - `pass`/`nopass` 設定收到SIGTSTP訊號gdb要轉傳給被追蹤的程式嗎？
   - `print`/`noprint` 設定收到SIGTSTP訊號gdb要顯示嗎？
 - `info signals` 顯示目前signals的設定
+- `set disable-randomization off` `這個指令可以gdb隨機載入執行檔到不同記憶體位置`
+  - 作業系統因為有ASLR的安全機制會把ELF File Types Dynamic(`ET_DYN`)型態的執行檔(又稱PIC[^pic]或PIE[^pie])載入到隨機的虛擬記憶體位置,但gdb會為了好追蹤偷偷關閉ASLR載入到固定的記憶體位置
 - `python` 在gdb裡面啟動python,用`end`來關閉,目的是可以拿來擴展gdb功能
 
 > [^pie]:position-independent executable 
@@ -98,7 +98,7 @@ b main.main
 - 希望學到簡單c inline assambly
 - 希望了解某些暫存器在system v abi的規範下有特殊用途
 - 不用main
-- 不用prinf libary
+- 不用printf libary
 - 輸出hello, world!
 ```c:main.c
 void print_asm(char *arg1,long int size){
@@ -129,6 +129,7 @@ gcc -nostdlib main.c
 
 
 - 了解到被追蹤的程式的signal,會被追蹤者掌控
+- 對程式按`CTRL+Z`默認的行為是發送(`SIGTSTP`)
 
 ```signal.c
 #include <unistd.h>
