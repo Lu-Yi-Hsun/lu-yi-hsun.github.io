@@ -48,7 +48,7 @@ wget -P ~ https://git.io/.gdbinit
 - `ni` 執行下一行組合語言,遇到function call不會中斷,等到function call執行完成才中斷
 - `s` 執行下一行原始碼,遇到function call會進入並且中斷
 - `si` 執行下一行組合語言,遇到function call會進入並且中斷
-- `b main` 設定中斷在`main`函數(`main`名稱是紀錄在symbol table`readelf -s 執行檔名`),如果gcc設定`-s`代表刪除程式所有`symbol table`,你就無法找到main的位置
+- `b main` 設定中斷在`main`函數(`main`名稱是紀錄在elf的symbol table`readelf -s 執行檔名`),如果gcc設定`-s`代表刪除程式所有`symbol table`,你就無法找到main的位置
 - `b *0x123` 設定中斷在`0x123`記憶體位置
 - `j *0x123` 跳到`0x123`記憶體位置並且會`馬上`繼續執行
 - `c` 持續執行等到下一個中斷`b`出現
@@ -100,6 +100,8 @@ b main.main
 - 不用main
 - 不用printf libary
 - 輸出hello, world!
+
+找找主程式的進入點? 
 ```c:main.c
 void print_asm(char *arg1,long int size){
     __asm__ volatile(
