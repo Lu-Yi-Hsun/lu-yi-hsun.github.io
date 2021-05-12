@@ -11,7 +11,7 @@ libraries:
 ## 介紹
 ![aa](../gdb_sample.drawio.svg)
 
-GDB(GNU Debugger)`Richard Stallman`成立`Free Software Foundation`
+GDB(GNU Debugger)是`Richard Stallman`為了GNU所開發的其中一個套件
 
 ### debug format
 
@@ -22,19 +22,35 @@ GDB(GNU Debugger)`Richard Stallman`成立`Free Software Foundation`
 gcc main.c -g
 ```
 
-接下來實驗搭配gdb-dashboard套件比較美觀請先安裝
-
-```bash
-wget -P ~ https://git.io/.gdbinit
-```
 
  
 
 ## GDB指令
 
-### 啟動GDB
 
-- `gdb --args executablename arg1 arg2 arg3` 打開並且跟蹤程式,如果有參數可以塞入
+### 環境準備
+
+#### 安裝gdb-dashboard
+接下來實驗搭配gdb-dashboard套件比較美觀請先安裝
+```bash
+wget -P ~ https://git.io/.gdbinit
+```
+
+#### 準備要實驗的程式
+
+```c:main.c
+#include<stdio.h>
+int main(){
+printf("hello, world!\n");
+return 0;
+}
+``` 
+
+
+### 啟動GDB
+- `gdb executablename`
+  - `gdb --args executablename arg1 arg2 arg3` 打開並且跟蹤程式,如果有參數可以塞入
+  - 因為要被你追蹤的程式還沒啟動所以需要這些指令:`r`,`start`,`starti`
 - `sudo gdb --pid 123` 跟蹤已經執行的程式利用pid,因為跟蹤其他程式所以需要root權限
   
 ### 進入GDB後
@@ -66,6 +82,7 @@ wget -P ~ https://git.io/.gdbinit
 - `info signals` 顯示目前signals的設定
 - `set disable-randomization off` `這個指令可以gdb隨機載入執行檔到不同記憶體位置`
   - 作業系統因為有ASLR的安全機制會把ELF File Types Dynamic(`ET_DYN`)型態的執行檔(又稱PIC[^pic]或PIE[^pie])載入到隨機的虛擬記憶體位置,但gdb會為了好追蹤偷偷關閉ASLR載入到固定的記憶體位置
+  - 觀察`gcc -no-pie main.c `與`gcc main.c `在gdb差別?
 - `python` 在gdb裡面啟動python,用`end`來關閉,目的是可以拿來擴展gdb功能
 
 > [^pie]:position-independent executable 
