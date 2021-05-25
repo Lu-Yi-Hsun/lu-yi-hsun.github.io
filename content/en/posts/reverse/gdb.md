@@ -141,7 +141,7 @@ void _start() {
 
 ```
 ```
-gcc -nostdlib main.c
+gcc -nostdlib main.c -no-pie
 ```
 
 #### handle signal範例
