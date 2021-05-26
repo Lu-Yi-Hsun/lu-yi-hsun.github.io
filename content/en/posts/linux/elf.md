@@ -25,7 +25,7 @@ Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔
 - [man](https://man7.org/linux/man-pages/man5/elf.5.html)
 - [eheader](https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.eheader.html)
 - [ELF文件可执行栈的深入分析](https://mudongliang.github.io/2015/10/23/elf.html)
-
+- [Oracle Solaris 11.1 Linkers and Libraries Guide ](https://docs.oracle.com/cd/E26502_01/html/E26507/chapter6-43405.html)
 ## ELF header
 
 利用指令查看
@@ -139,7 +139,7 @@ readelf -h hello.ko
 
 #### ET_EXEC 
 
-這種類型的執行檔載入到固定記憶體位置,所以e_entry的位置就是固定的位置
+這種類型的執行檔載入到固定虛擬記憶體位置,所以e_entry的位置就是固定的位置
 
 ```c:main.c
 #include<stdio.h>
@@ -159,7 +159,7 @@ readelf-h a.out
 #### ET_DYN
 
 ##### position-independent executable
-這種類型的執行檔才可以被作業系隨機載入到不同記憶體位置
+這種類型的執行檔才可以被作業系隨機載入到不同虛擬記憶體位置
 ```c:main.c
 #include<stdio.h>
 int main(){
@@ -232,14 +232,12 @@ readelf -h core
 ```
 gdb a.out core
 ```
-
-> Don't communicate by sharing memory, share memory by communicating.</p>
-> — <cite>Rob Pike[^app]</cite>
+ 
 
 
 ### e_machine
 
-這個欄位是可以知道此elf檔案室屬於哪個架構的
+這個欄位是可以知道此elf檔案是屬於哪個架構的
 
 細節請看[elf-em.h](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/elf-em.h?h=v5.10)
 
@@ -332,7 +330,7 @@ The value 1 signifies the original file format; extensions will create new versi
 ### e_entry
 
 只有`e_type`為`ET_EXEC`的執行檔他的`e_entry`才值得參考
-`e_type`為`ET_EXEC`的執行檔載入的記憶體位置會變動
+`e_type`為`ET_DYN`的執行檔載入的虛擬記憶體位置會變動
 #### 實驗e_entry
 
 先從[ET_EXEC](#et_exec)準備好環境
@@ -367,7 +365,7 @@ r
 紀錄`section header table`位置在哪,如果沒有就`0`
 ### e_flags
 
-`processor-specific`這裡定義硬體的特徵,細節的定義在不同的指令架構的規格書裡面,可以參考[RISC-V ELF psABI specification][https://github.com/riscv/riscv-elf-psabi-doc/blob/master/riscv-elf.md#-file-header]裡面關於elf的規範
+`processor-specific`這裡定義硬體的特徵,細節的定義在不同的指令架構的規格書裡面,如果是`RISC-V`可以參考[RISC-V ELF psABI specification][https://github.com/riscv/riscv-elf-psabi-doc/blob/master/riscv-elf.md#-file-header]裡面關於elf的規範
 
 
 ### e_ehsize
@@ -418,22 +416,24 @@ readelf -x .shstrtab a.out
 
 ## Program Headers
 
-利用指令查看
-```bash
-readelf -l 你的檔名
-```
-
-只有`executable`與`shared object files`才有特別的用途
-> [Program headers are meaningful only for executable and shared object files](https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.pheader.html)
-
 {{<notice warning>}}
 名詞注意:一個`segment`是由一個到多個`section`組成
 {{</notice>}}
 
 
-一個elf有0或多個`Program Header`,每個`Program Header`專門處理一個`segment`載入記憶體的規劃,如果你的elf檔案不是拿來載入記憶體執行用途可能就沒有這個header,如下範例
+利用指令查看
+```bash
+readelf -l 你的檔名
+```
+
+只有`executable`與`shared object files`的`Program Headers`才有特別的用途
+> [Program headers are meaningful only for executable and shared object files](https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.pheader.html)
+
+ 
+一個elf有0或多個`Program Header`,每個`Program Header`專門處理一個`segment`載入記憶體的規劃,如果你的`elf檔案`或是某個`section`不是拿來載入記憶體執行用途可能就沒有這個header,如下範例
 {{<notice info>}}
-利用`readelf -l 你的檔名`指令觀察`e_type` 為`REL (Relocatable file)`的elf有沒有program headers
+先準備好[ET_REL](#et_rel)的執行檔案
+利用`readelf -l function.o`指令觀察`e_type` 為`REL (Relocatable file)`的elf有沒有program headers?
 {{</notice>}}
 
  
@@ -453,16 +453,19 @@ typedef struct elf64_phdr {
 
 
 ### p_type
+
+`Program Header`的型態
+
 |		p_type	|		Value			|	用途		|
 | --------- | -------------------- |-------|
-PT_NULL	|0 |
-PT_LOAD	|1|
-PT_DYNAMIC|	2|
-PT_INTERP	|3| 當程式需要動態連結 就需要`PT_INTERP`型態的`segment` 並且裡面包含`dynamic linker/loader`的路徑
-PT_NOTE	|4|
-PT_SHLIB	|5|
-PT_PHDR|	6|
-PT_TLS|	7|
+PT_NULL	|0 | 沒有在使用, `program header table`會忽略`PT_NULL`型態的`segment`,FIXME: 細節還需要在研究.
+PT_LOAD	|1| 	單純載入`segment`到虛擬記憶體,如果載入到記憶體(`p_memsz`)時比在檔案(`p_filesz`)的時候還大,多出來的地方補0,可能是為了對齊記憶體
+PT_DYNAMIC|	2|  載入這個`segment`裡面都是`Dynamic Section`去虛擬記憶體
+PT_INTERP	|3| 當程式需要動態連結 就需要載入這個`PT_INTERP`型態的`segment`去記憶體 並且裡面包含`dynamic linker/loader`的路徑
+PT_NOTE	|4|  載入這個`segment`裡面都是`Note Section`去虛擬記憶體
+PT_SHLIB	|5| 這個保留尚未定義
+PT_PHDR|	6| 這個型態代表載入整個`Program Header Table`去虛擬記憶體,裡面有1個以上`Program Header`
+PT_TLS|	7| 載入記憶體是以`PT_TLS`型態,這個`segment`是存放[`Thread-local storage`](https://selfboot.cn/2016/08/22/threadlocal_overview/)變數初始數值
 PT_LOOS	|0x60000000| 從0x60000000~0x6fffffff的數值保留給作業系統使用
 PT_HIOS	|0x6fffffff| 同上
 PT_LOPROC|	0x70000000|從0x70000000~0x7fffffff的數值保留給處理器使用
@@ -477,7 +480,7 @@ PT_HIPROC|	0x7fffffff|同上
 	```
 
 
-2.  編譯此[範例](../../reverse/gdb/#有趣的程式)程式再觀察一次,可以發現`PT_INTERP`型態的segment不見了,go語言也是屬於這種不需要動態連結的程式,好處是有很好的可攜性,缺點是執行檔比較大
+2.  編譯此[範例](../../reverse/gdb/#有趣的程式)程式再觀察一次,可以發現`PT_INTERP`型態的segment不見了,go語言也是屬於這種不需要動態連結的程式,好處是有很好的可攜性,缺點是執行檔比較大,並且`e_type`屬於`ET_EXEC`代表每次都載入到固定虛擬記憶體可能有安全疑慮
 	
 3.  修改ld-linux(`dynamic linker `)名稱會發生什麼事?
 	{{<notice warning>}}
@@ -487,14 +490,122 @@ PT_HIPROC|	0x7fffffff|同上
 是不是只有實驗2的程式才能跑?
 	{{</notice>}}
 
+#### PT_TLS實驗
+
+參考[Linux Thread Local Storage](http://weng-blog.com/2016/07/Linux-tls/)
+
+如下範例可以知道`TLS`(Thread Local Storage)的作法
+
+每開起一個線程會從`TLS_data`(elf會定義這個變數存放的segment載入記憶體時`p_type`為`PT_TLS`)拿出變數的初始數值存放每個線程`內部`的`TLS_data`並且每個函數都可以直接使用`TLS_data`.
+
+好處可以看到`TLS`版本不用傳遞參數給函數就可以直接使用,
 
 
+{{< codes NO_TLS TLS >}}
+  {{< code >}}
+{{< highlight c "linenos=table,hl_lines=5 11,linenostart=1" >}}
+#define  NUMTHREADS   2 
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+void show_tls(int local_data) {
+    printf("線程 %.16lx: TLS data=%d\n",pthread_self(), local_data);
+}
+void *thread_run(int i)
+{
+   int local_data = i;
+   show_tls(local_data);
+   return NULL;
+}
+int main(int argc, char **argv)
+{
+  pthread_t             thread[NUMTHREADS];
+  int                   rc=0;
+  printf("開始執行\n");
+  for (int i=0; i < NUMTHREADS; i++) { 
+     rc = pthread_create(&thread[i], NULL, &thread_run, i);
+  }
+  printf("執行中..\n");
+  for (int i=0; i < NUMTHREADS; i++) {
+     rc = pthread_join(thread[i], NULL);  
+  }
+  printf("執行完成\n");
+  return 0;
+}
+{{< / highlight >}}
+  {{< /code >}}
+
+  {{< code >}}
+
+
+{{< highlight c "linenos=table,hl_lines=6 12,linenostart=1" >}}
+#define  NUMTHREADS   2 
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+__thread int TLS_data=87;
+void show_tls() {
+    printf("線程 %.16lx: TLS data=%d\n",pthread_self(), TLS_data);
+}
+void *thread_run(int i)
+{
+   TLS_data = i;
+   show_tls();
+   return NULL;
+}
+int main(int argc, char **argv)
+{
+  pthread_t             thread[NUMTHREADS];
+  int                   rc=0;
+  printf("開始執行\n");
+  for (int i=0; i < NUMTHREADS; i++) { 
+     rc = pthread_create(&thread[i], NULL, &thread_run, i);
+  }
+  printf("執行中..\n");
+  for (int i=0; i < NUMTHREADS; i++) {
+     rc = pthread_join(thread[i], NULL);  
+  }
+  printf("執行完成\n");
+  return 0;
+}
+{{< / highlight >}}
+  
+  {{< /code >}}
+{{< /codes >}}
+
+編譯
+```
+gcc t.c -lpthread
+```
+
+
+ 
+ 
 ### p_flags
+
+定義這個區塊的`segment`在記憶體的權限 最後3個bit定義 讀/寫/執行
+
+舉例
+可讀/不可寫/可執行
+0x00000000000000000000000000000101(32bit)
+
+可讀/可寫/可執行
+0x00000000000000000000000000000111(32bit)
+
 ### p_offset
+
+定義這個`segment`在檔案哪個位置開始
+
 ### p_vaddr
+
+定義這個`segment`載入到虛擬記憶體的哪個位置,只有沒有經過ASLR(Address space layout randomization)載入的執行檔(`e_type`為`ET_EXEC`的執行檔),這個數值才有參考價值 
+
 ### p_paddr
+定義這個`segment`載入到實體記憶體的哪個位置,因為實體記憶體被作業系統保護所以這個數值不準確.
 ### p_filesz
+定義這個`segment`在檔案的大小多少bytes,可為0
 ### p_memsz
+定義這個`segment`在虛擬記憶體的大小多少bytes,可為0
 ### p_align
  
 
@@ -523,40 +634,116 @@ typedef struct elf64_shdr {
 ```
 
 ### sh_name
+
+`sh_name`存放名稱的index
+
+section的名稱字串存在`.shstrtab`
+
 ### sh_type
 
-#### 
+Name|	Value|用途
+|----|------|-----|
+SHT_NULL|	0| 這個型態代表這個section header無效
+SHT_PROGBITS	|1|這裡面的section放程式執行用到的東西
+SHT_SYMTAB|	2| 這裡面的section放symbol table FIXME [Symbol Table](https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.symtab.html)
+SHT_STRTAB|	3| 這裡面的section放滿人可以看得懂的字串,例如可以拿來表示section的名稱,
+SHT_RELA|	4| 給object file重定位資訊用的(with explicit addends) FIXME:[Relocation](https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.reloc.html) 
+SHT_HASH|	5|這個section給symbol table使用 
+SHT_DYNAMIC	|6| 這裡放動態連結的訊息  FIXME:[Dynamic Section](https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.dynamic.html#dynamic_section)
+SHT_NOTE	|7| 這裡檔案的訊息  FIXME:[Note Section](https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.pheader.html#note_section)
+SHT_NOBITS|	8|代表這個section在檔案裡面沒有佔用任何大小,它只有section header而已
+SHT_REL|	9|給object file重定位資訊用的(without explicit addends) FIXME:[Relocation](https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.reloc.html) 
+SHT_SHLIB	|10|這個保留尚未定義
+SHT_DYNSYM|	11| 這裡面的section放symbol table
+SHT_INIT_ARRAY	|14|裡面有陣列記憶體位置,指向主程式開始前的函數FIXME:[Initialization and Termination Functions](https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.dynamic.html#init_fini)
+SHT_FINI_ARRAY	|15|裡面有陣列記憶體位置,指向主程式結束後要執行的函數,`atexit` FIXME:[Initialization and Termination Functions](https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.dynamic.html#init_fini)
+SHT_PREINIT_ARRAY	|16|裡面有陣列記憶體位置指向函數,這個函數會在`SHT_INIT_ARRAY`裡面所有函數執行之前執行
+SHT_GROUP	|17|
+SHT_SYMTAB_SHNDX	|18|
+SHT_LOOS	|0x60000000|從0x60000000~0x6fffffff的數值保留給作業系統使用
+SHT_HIOS	|0x6fffffff|同上
+SHT_LOPROC|	0x70000000|從0x70000000~0x7fffffff的數值保留給處理器使用
+SHT_HIPROC|	0x7fffffff|同上
+SHT_LOUSER	|0x80000000|從0x80000000~0xffffffff的數值保留給應用程式使用
+SHT_HIUSER|	0xffffffff|同上
+
+#### Initialization and Termination Functions
+尚未完成
+這裡深入探討`SHT_PREINIT_ARRAY`,`SHT_FINI_ARRAY`,`SHT_INIT_ARRAY`
+
+
 ### sh_flags
+
+ 
+Name|	Value|用途
+|----|------|-----|
+SHF_WRITE|	0x1|程式執行時這個section可寫
+SHF_ALLOC|	0x2|程式執行時這個section會佔用記憶體
+SHF_EXECINSTR|	0x4|這個section包含機械碼
+SHF_MERGE|	0x10|
+SHF_STRINGS|	0x20|包含以零結尾的字符串組成
+SHF_INFO_LINK|	0x40|
+SHF_LINK_ORDER|	0x80|
+SHF_OS_NONCONFORMING|	0x100|
+SHF_GROUP|	0x200|
+SHF_TLS|	0x400|
+SHF_MASKOS|	0x0ff00000|保留給作業系統使用
+SHF_MASKPROC|	0xf0000000|保留給處理器使用
+
+
+
 ### sh_addr
+
+此section在執行時的記憶體哪個位置
+0代表沒有在記憶體中
+
 ### sh_offset
+
+此section在檔案時哪個位置
+
 ### sh_size
+代表section在檔案的大小
+{{<notice warning>}}
+如果`sh_type`為`SHT_NOBITS`,雖然檔案沒有存放,但是sh_size可能不為0
+舉例
+c語言還沒初始化的變數放在`.bss section`屬於`SHT_NOBITS`在檔案沒佔空間(只有section header)但載入記憶體後要佔空間
+
+{{</notice>}}
+
 ### sh_link
 ### sh_info
 ### sh_addralign
+
+此section要對齊記憶體
+必須讓sh_addr數值剛好,sh_addr/sh_addralign整除才能對齊
+記憶體對齊可以增加效能,或是對齊cache避免[False_sharing](https://en.wikipedia.org/wiki/False_sharing)
+
 ### sh_entsize
 
 
+## Special Sections
+
+這個部份負責探討特殊Sections在幹麻
+這個部份尚未完成
 
 
+## 進階練習
 
+學完elf後,如何從這個[範例](../../reverse/gdb/#有趣的程式)刪減elf執行檔的大小又可以執行?
 
+可以作答在最下面的討論區
 
-## 進階探討ELF
-https://web.archive.org/web/20210415124218/http://www.muppetlabs.com/~breadbox/software/tiny/teensy.html
+可以參考[A Whirlwind Tutorial on Creating Really Teensy ELF Executables for Linux](https://web.archive.org/web/20210415124218/http://www.muppetlabs.com/~breadbox/software/tiny/teensy.html)
 
+[lief工具修改](https://lief.quarkslab.com/)
 
 ## 參考
 
  
 [操作系统真象还原-5.3.3 elf 格式的二进制文件]  
-
-[The Curious Case of Position Independent Executables](https://web.archive.org/web/20171120151138/https://eklitzke.org/position-independent-executables)
-
-
-[^app]:[APP漏洞扫描器之未使用地址空间随机化](https://web.archive.org/web/20201130173004/https://developer.aliyun.com/article/65363)
-
 [Learning Linux Binary Analysis]
-
+[The Curious Case of Position Independent Executables](https://web.archive.org/web/20171120151138/https://eklitzke.org/position-independent-executables)
+[APP漏洞扫描器之未使用地址空间随机化](https://web.archive.org/web/20201130173004/https://developer.aliyun.com/article/65363)
 [ELF之學習心得02 - ELF Header(e_ident篇)](https://web.archive.org/web/20190916092435/http://nano-chicken.blogspot.com/2011/07/elf02-elf-header.html)
 
 [ELF Header](https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.eheader.html)
