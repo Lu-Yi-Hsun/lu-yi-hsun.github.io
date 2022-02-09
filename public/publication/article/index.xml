@@ -44,6 +44,30 @@
         
       </item>
       
+      <item>
+        <title>The nanoPU: A Nanosecond Network Stack for Datacenters</title>
+        <link>/publication/article/nanopu/</link>
+        <pubDate>Wed, 29 Jan 2020 00:00:00 +0000</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Wed, 29 Jan 2020 00:00:00 +0000</atom:modified>
+        <guid>/publication/article/nanopu/</guid>
+        <description>introduction 作者說物理和氣候研究人員與全球合作者交換petabytes的數據 他們發現使用Gb等級的網路設施在不同洲之間只能提供幾Mb的速度 這些問題始於</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        <media:content url="bbr.png" medium="image"><media:title type="html">featured image</media:title></media:content>
+        
+        
+        
+          
+            
+              <category>壅塞控制</category>
+            
+          
+        
+        
+        
+      </item>
+      
 
     
   </channel>

@@ -22,11 +22,11 @@
       
       <item>
         <title>assambly</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/assambly/</link>
+        <link>/posts/reverse/assambly/</link>
         <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/assambly/</guid>
+        <guid>/posts/reverse/assambly/</guid>
         <description>注意要點 這種關於rip基底做偏移要注意%rip要帶入下一行指令的位置 0x1&amp;ndash;mov 0x2ee6(%rip),%rdx 這裡%rip指向0x1 但執行mov 0x2ee6(%rip),%rdx</description>
         
         <dc:creator>呂奕珣</dc:creator>

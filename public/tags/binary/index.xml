@@ -27,7 +27,7 @@
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
         <guid>/posts/linux/elf/</guid>
-        <description>接下來以linux v5.10 64bit elf作範例 簡介 Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔案,可以搭配文件elf.pdf與原始碼elf.h一起看</description>
+        <description>接下來以linux v5.10 64bit Elf64作範例 簡介 Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔案,可以搭配文件交叉看 elf.pdf 原始碼elf.h linux</description>
         
         <dc:creator>呂奕珣</dc:creator>
         

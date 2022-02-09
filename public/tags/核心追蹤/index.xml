@@ -22,11 +22,11 @@
       
       <item>
         <title>ftrace</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</link>
+        <link>/posts/reverse/ftrace/</link>
         <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</guid>
+        <guid>/posts/reverse/ftrace/</guid>
         <description>介紹 ftrace是Steven Rostedt開發trace-cmd也是他開發的,接下來用trace-cmd示範 細節文件請看ftrace.tx</description>
         
         <dc:creator>呂奕珣</dc:creator>

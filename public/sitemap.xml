@@ -13,7 +13,7 @@
   </url>
   
   <url>
-    <loc>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/assambly/</loc>
+    <loc>/posts/reverse/assambly/</loc>
     <lastmod>2021-01-30T05:23:00+08:00</lastmod>
   </url>
   
@@ -43,7 +43,7 @@
   </url>
   
   <url>
-    <loc>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</loc>
+    <loc>/posts/reverse/ftrace/</loc>
     <lastmod>2021-01-30T05:23:00+08:00</lastmod>
   </url>
   
@@ -53,12 +53,12 @@
   </url>
   
   <url>
-    <loc>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/gdb/</loc>
+    <loc>/posts/reverse/gdb/</loc>
     <lastmod>2021-01-30T05:23:00+08:00</lastmod>
   </url>
   
   <url>
-    <loc>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/godbolt/</loc>
+    <loc>/posts/reverse/godbolt/</loc>
     <lastmod>2021-01-30T05:23:00+08:00</lastmod>
   </url>
   
@@ -73,7 +73,7 @@
   </url>
   
   <url>
-    <loc>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/objdump/</loc>
+    <loc>/posts/reverse/objdump/</loc>
     <lastmod>2021-01-30T05:23:00+08:00</lastmod>
   </url>
   
@@ -83,7 +83,7 @@
   </url>
   
   <url>
-    <loc>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/shellcode/</loc>
+    <loc>/posts/reverse/shellcode/</loc>
     <lastmod>2021-01-30T05:23:00+08:00</lastmod>
   </url>
   
@@ -123,12 +123,32 @@
   </url>
   
   <url>
-    <loc>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/rv/</loc>
+    <loc>/posts/reverse/rv/</loc>
     <lastmod>2021-01-30T05:23:00+08:00</lastmod>
   </url>
   
   <url>
+    <loc>/tags/ebpf/</loc>
+    <lastmod>2021-01-30T02:40:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/kernel-by-pass/</loc>
+    <lastmod>2021-01-30T02:40:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/network/xdp/</loc>
+    <lastmod>2021-01-30T02:40:00+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/posts/abi/</loc>
+    <lastmod>2021-01-30T02:40:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/%E9%AB%98%E9%80%9F%E7%B6%B2%E8%B7%AF/</loc>
     <lastmod>2021-01-30T02:40:00+08:00</lastmod>
   </url>
   
@@ -138,7 +158,17 @@
   </url>
   
   <url>
+    <loc>/tags/%E4%BD%A0%E6%89%80%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84-c-%E8%AA%9E%E8%A8%80/</loc>
+    <lastmod>2021-01-29T18:00:00+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/tags/%E6%80%95%E5%BF%98%E8%A8%98%E6%80%8E%E5%AF%ABhugo-markdown/</loc>
+    <lastmod>2021-01-29T18:00:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/c/pointer/</loc>
     <lastmod>2021-01-29T18:00:00+08:00</lastmod>
   </url>
   
@@ -174,6 +204,11 @@
   
   <url>
     <loc>/publication/article/bbr/</loc>
+    <lastmod>2020-01-29T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/publication/article/nanopu/</loc>
     <lastmod>2020-01-29T00:00:00+00:00</lastmod>
   </url>
   
@@ -253,7 +288,7 @@
   </url>
   
   <url>
-    <loc>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/z3/</loc>
+    <loc>/posts/reverse/z3/</loc>
     <lastmod>2019-11-18T21:00:06+09:00</lastmod>
   </url>
   
@@ -358,7 +393,19 @@
   </url>
   
   <url>
+    <loc>/tags/cpu/</loc>
+  </url>
+  
+  <url>
     <loc>/tags/index/</loc>
+  </url>
+  
+  <url>
+    <loc>/tags/memory/</loc>
+  </url>
+  
+  <url>
+    <loc>/posts/cpu/memory/</loc>
   </url>
   
   <url>

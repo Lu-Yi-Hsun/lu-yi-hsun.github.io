@@ -1380,7 +1380,7 @@
     "datePublished": "2021-01-30T05:23:00+08:00",
     "dateModified": "2021-01-30T05:23:00+08:00",
     "url" : "/posts/linux/elf/",
-    "description": "接下來以linux v5.10 64bit elf作範例 簡介 Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔案,可以搭配文件elf.pdf與原始碼elf.h一起看",
+    "description": "接下來以linux v5.10 64bit Elf64作範例 簡介 Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔案,可以搭配文件交叉看 elf.pdf 原始碼elf.h linux",
     "keywords": ["binary","系統程式","安全"],
     "mainEntityOfPage": {
       "@type": "WebPage",
@@ -1757,7 +1757,7 @@
 <div class="single__infos">
   <time class="single__info" title="Written At">📅&nbsp;Jan 30, 2021 </time>
   
-  &nbsp;&middot;&nbsp; <span class="single__info" title="Reading Time"> ☕&nbsp;2&nbsp;min read </span>
+  &nbsp;&middot;&nbsp; <span class="single__info" title="Reading Time"> ☕&nbsp;14&nbsp;min read </span>
   
   <span class="single__info">
     
@@ -1782,12 +1782,22 @@
     <article class="single__contents" data-dir="ltr" data-ani="true">
       
       <div class="notices warning" data-title="Warning">
-  接下來以linux v5.10 64bit elf作範例
+  接下來以linux v5.10 64bit Elf64作範例
 </div>
 <h2 id="簡介">簡介</h2>
-<p>Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔案,可以搭配文件<a href="https://refspecs.linuxfoundation.org/elf/elf.pdf">elf.pdf</a>與原始碼<a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/elf.h?h=v5.10">elf.h</a>一起看</p>
+<p><img src="../elf_arch.drawio.svg" alt="elf_arch" /></p>
+<p>Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔案,可以搭配文件交叉看</p>
+<ul>
+<li><a href="https://refspecs.linuxfoundation.org/elf/elf.pdf">elf.pdf</a></li>
+<li>原始碼<a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/elf.h?h=v5.10">elf.h</a></li>
+<li>linux載入elf行為-<a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/binfmt_elf.c?h=v5.10#n820">load_elf_binary</a></li>
+<li><a href="https://man7.org/linux/man-pages/man5/elf.5.html">man</a></li>
+<li><a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.eheader.html">eheader</a></li>
+<li><a href="https://mudongliang.github.io/2015/10/23/elf.html">ELF文件可执行栈的深入分析</a></li>
+<li><a href="https://docs.oracle.com/cd/E26502_01/html/E26507/chapter6-43405.html">Oracle Solaris 11.1 Linkers and Libraries Guide </a></li>
+</ul>
 <h2 id="elf-header">ELF header</h2>
-<p>小範例</p>
+<p>利用指令查看</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -1796,7 +1806,8 @@
 <pre class="chroma"><code class="language-bash" data-lang="bash">readelf -h 你的檔名
 </code></pre></td></tr></table>
 </div>
-</div><div class="highlight"><div class="chroma">
+</div><p>原始碼<a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/elf.h?h=v5.10">elf.h</a></p>
+<div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
@@ -1834,38 +1845,1045 @@
 <span class="p">}</span> <span class="n">Elf64_Ehdr</span><span class="p">;</span>
 </code></pre></td></tr></table>
 </div>
-</div><h3 id="e_type">e_type</h3>
-<p>這邊描述elf檔案是什麼型態<br />
-| e_type    | 數值(unsigned short) | 用途                                                                                        |<br />
-| &mdash;&mdash;&mdash; | &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash; | &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;- |<br />
-| ET_NONE   | 0                    | No file type 未知格式(我在linux核心找不到有啥特別用途)                                       |<br />
-| ET_REL    | 1                    | Relocatable file 靜態連結.o .ko                                                             |<br />
-| ET_EXEC   | 2                    | Executable file 可以執行的檔案                                                              |<br />
-| ET_DYN    | 3                    | Shared object file 動態連結檔案.so,或是position-independent executable                                                     |<br />
-| ET_CORE   | 4                    | Core file 當發生core dumped如果有<code>設定</code>linux會輸出這個type的elf檔案讓你追蹤為什麼程式崩潰了 |<br />
-| ET_LOPROC | 0xff00               | Processor-specific ET_LOPROC~ET_HIPROC範圍的數值                                            |<br />
-| ET_HIPROC | 0xffff               | Processor-specific 同上                                                                     |</p>
-<p>var/lib/systemd/coredump<br />
-coredumpctl</p>
-<p>這種執行檔position independent executable aslr是ET_DYN型態要注意,並且entry point 不準確<br />
-Position-independent code<br />
-ET_DYN</p>
-<blockquote>
-<p>Don&rsquo;t communicate by sharing memory, share memory by communicating.</p><br />
-— <cite>Rob Pike<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></cite></p>
-</blockquote>
-<h2 id="參考">參考</h2>
-<p>[操作系统真象还原-5.3.3 elf 格式的二进制文件]</p>
-<p><a href="https://web.archive.org/web/20171120151138/https://eklitzke.org/position-independent-executables">The Curious Case of Position Independent Executables</a></p>
-<p>[Learning Linux Binary Analysis]</p>
-<div class="footnotes" role="doc-endnotes">
-<hr />
+</div><h3 id="e_ident">e_ident</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>e_ident第幾個bytes</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EI_MAG0</td>
+<td>0</td>
+<td>0x7f</td>
+</tr>
+<tr>
+<td>EI_MAG1</td>
+<td>1</td>
+<td>&lsquo;E&rsquo;</td>
+</tr>
+<tr>
+<td>EI_MAG2</td>
+<td>2</td>
+<td>&lsquo;L&rsquo;</td>
+</tr>
+<tr>
+<td>EI_MAG3</td>
+<td>3</td>
+<td>&lsquo;F&rsquo;</td>
+</tr>
+<tr>
+<td>EI_CLASS</td>
+<td>4</td>
+<td>ELFCLASSNONE=0</br>ELFCLASS32=1</br>ELFCLASS64=2</td>
+</tr>
+<tr>
+<td>EI_DATA</td>
+<td>5</td>
+<td>ELFDATANONE=0</br>ELFDATA2LSB=1 又稱little endian</br>ELFDATA2MSB=2 又稱big endian</td>
+</tr>
+<tr>
+<td>EI_VERSION</td>
+<td>6</td>
+<td>原始的ELF specification規範這裡固定是1,除非你要設計自己客製擴展ELF的規範不然<code>e_version</code>與<code>EI_VERSION</code>都是固定1</td>
+</tr>
+<tr>
+<td>EI_OSABI</td>
+<td>7</td>
+<td>ELFOSABI_NONE/ELFOSABI_SYSV 0 UNIX System V ABI</br>ELFOSABI_HPUX	1	Hewlett-Packard HP-UX</br>ELFOSABI_NETBSD	2	NetBSD</br>ELFOSABI_LINUX	3	Linux</br>ELFOSABI_SOLARIS	6	Sun Solaris</br>ELFOSABI_AIX	7	AIX</br>ELFOSABI_IRIX	8	IRIX</br>ELFOSABI_FREEBSD	9	FreeBSD</br>ELFOSABI_TRU64	10	Compaq TRU64 UNIX</br>ELFOSABI_MODESTO	11	Novell Modesto</br>ELFOSABI_OPENBSD	12	Open BSD</br>ELFOSABI_OPENVMS	13	Open VMS</br>ELFOSABI_NSK	14	Hewlett-Packard Non-Stop Kernel</br></td>
+</tr>
+<tr>
+<td>EI_ABIVERSION</td>
+<td>8</td>
+<td>ABI version</td>
+</tr>
+<tr>
+<td>EI_PAD</td>
+<td>9</td>
+<td>Start of padding bytes 從這裡開始就補0直到最後 關於padding請看(你所不知道的 C 語言：記憶體管理、對齊及硬體特性)[https://hackmd.io/@sysprog/c-memory#data-alignment]</td>
+</tr>
+<tr>
+<td>EI_NIDENT</td>
+<td>16</td>
+<td>Size of e_ident[]</td>
+</tr>
+</tbody>
+</table>
+<div class="notices info" data-title="Info">
+  嘗試利用<a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.hexeditor">vscode的Hex Editor</a>修改執行檔並且利用readelf觀察
+</div>
+<h3 id="e_type">e_type</h3>
+<p>這邊描述elf檔案是什麼型態包含了<code>ET_REL</code>,<code>ET_EXEC</code>,<code>ET_DYN</code>,<code>ET_CORE</code>,接下來簡單</p>
+<table>
+<thead>
+<tr>
+<th>e_type</th>
+<th>數值(unsigned short)</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ET_NONE</td>
+<td>0</td>
+<td>No file type 未知格式(我在linux核心找不到有啥特別用途)</td>
+</tr>
+<tr>
+<td>ET_REL</td>
+<td>1</td>
+<td>Relocatable file 靜態連結  .o(object file) .a(靜態連結庫) .ko(kernel module)</td>
+</tr>
+<tr>
+<td>ET_EXEC</td>
+<td>2</td>
+<td>Executable file 可以執行的檔案</td>
+</tr>
+<tr>
+<td>ET_DYN</td>
+<td>3</td>
+<td>Shared object file 動態連結檔案.so,或是position-independent executable</td>
+</tr>
+<tr>
+<td>ET_CORE</td>
+<td>4</td>
+<td>Core file 當發生core dumped如果有<code>設定</code>linux會輸出這個type的elf檔案讓你追蹤為什麼程式崩潰了</td>
+</tr>
+<tr>
+<td>ET_LOPROC</td>
+<td>0xff00</td>
+<td>Processor-specific ET_LOPROC~ET_HIPROC範圍的數值</td>
+</tr>
+<tr>
+<td>ET_HIPROC</td>
+<td>0xffff</td>
+<td>Processor-specific 同上</td>
+</tr>
+</tbody>
+</table>
+<h4 id="et_rel">ET_REL</h4>
+<h5 id="object-file">object file</h5>
+<p>ET_REL型態的elf最主要是object file<br />
+<a href="../ET_REL_lab.zip">下載ET_REL範例</a>,裡面有2個檔案<code>function.c</code>和<code>main.c</code></p>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p><a href="https://web.archive.org/web/20201130173004/https://developer.aliyun.com/article/65363">APP漏洞扫描器之未使用地址空间随机化</a> <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li>產生 function.c object file
+<pre><code>gcc -fPIC -c function.c
+</code></pre></li>
+<li>產生 main.c object file
+<pre><code>gcc -fPIC -c main.c
+</code></pre></li>
+<li>觀察object file的elf type
+<pre><code>readelf -h function.o
+</code></pre><p>``</p>
 </li>
 </ol>
+<h5 id="kernel-module">kernel module</h5>
+<p><a href="../kernel_module.zip">下載kernel_module範例</a></p>
+<p>編譯</p>
+<pre><code>make
+</code></pre><p>載入kernel module</p>
+<pre><code>sudo insmod hello.ko
+</code></pre><p>查詢kernel module已經載入了哪些</p>
+<pre><code>sudo lsmod | grep &quot;hello&quot;
+</code></pre><p>刪除kernel module</p>
+<pre><code>sudo rmmod hello.ko
+</code></pre><p>查詢printk輸出什麼</p>
+<pre><code>dmesg
+</code></pre><p>我們來觀察kernel module的elf type</p>
+<pre><code>readelf -h hello.ko
+</code></pre><h4 id="et_exec">ET_EXEC</h4>
+<p>這種類型的執行檔載入到固定虛擬記憶體位置,所以e_entry的位置就是固定的位置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c:main.c" data-lang="c:main.c"><span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello World</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
+</div><p>編譯</p>
+<pre><code>gcc -no-pie main.c
+</code></pre><p>觀察型態</p>
+<pre><code>readelf-h a.out 
+</code></pre><h4 id="et_dyn">ET_DYN</h4>
+<h5 id="position-independent-executable">position-independent executable</h5>
+<p>這種類型的執行檔才可以被作業系隨機載入到不同虛擬記憶體位置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c:main.c" data-lang="c:main.c"><span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hello World</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>編譯</p>
+<pre><code>gcc -pie main.c
+</code></pre><p>觀察型態</p>
+<pre><code>readelf-h a.out 
+</code></pre><h5 id="share-libary">share libary</h5>
+<p>接下來繼續用剛才生成a.out來查詢share libary是哪種elf型態</p>
+<p>查詢a.out需要動態連結哪些share libary</p>
+<pre><code>ldd a.out
+</code></pre><p>我的電腦就出現<code>/lib/x86_64-linux-gnu/libc.so.6</code></p>
+<pre><code>linux-vdso.so.1 (0x00007ffcb0cba000)
+libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f5f6cd3a000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f5f6cf4e000)
+</code></pre><p>分析看看是什麼型態</p>
+<pre><code>readelf -h /lib/x86_64-linux-gnu/libc.so.6
+</code></pre><h4 id="et_core">ET_CORE</h4>
+<p>這種型態的elf是當你的程式發生core dumped,作業系統就會吐出來<code>ET_CORE</code>的elf讓你用gdb來分析</p>
+<p>設定core dump檔案的大小不限制</p>
+<pre><code>ulimit -c unlimited
+</code></pre><p>我們故意寫一個會出錯的程式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c:main.c" data-lang="c:main.c"><span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+        <span class="kt">int</span> <span class="o">*</span><span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span><span class="o">*</span><span class="n">a</span><span class="p">);</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>編譯</p>
+<pre><code>gcc -g main.c
+</code></pre><p>執行<code>a.out</code></p>
+<pre><code>./a.out
+</code></pre><p>發生<code>Segmentation fault (core dumped)</code>並且看到core這個檔案</p>
+<p>我們來觀察<code>core</code>的type</p>
+<pre><code>readelf -h core
+</code></pre><p>我們來利用gdb與core來幫助我們分析哪裡出錯了</p>
+<pre><code>gdb a.out core
+</code></pre><h3 id="e_machine">e_machine</h3>
+<p>這個欄位是可以知道此elf檔案是屬於哪個架構的</p>
+<p>細節請看<a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/elf-em.h?h=v5.10">elf-em.h</a></p>
+<p>其中比較特別的是近幾年比較紅的<code>RISC-V</code>,<code>BPF</code>(linux核心裡面的虛擬機,指令就是虛擬機專用的<code>bytecode</code>)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define EM_RISCV	243	</span><span class="cm">/* RISC-V */</span><span class="cp">
+</span><span class="cp">#define EM_BPF		247	</span><span class="cm">/* Linux BPF - in-kernel virtual machine */</span><span class="cp">
+</span></code></pre></td></tr></table>
+</div>
+</div><h4 id="簡單bpf-xdp">簡單bpf xdp</h4>
+<p>這裡小範例讓大家體會什麼是XDP</p>
+<h5 id="安裝">安裝</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">sudo apt-get install git
+sudo apt-get install clang
+git clone https://github.com/libbpf/libbpf.git
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="創建檔案">創建檔案</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c:xdp_show_icmp.c" data-lang="c:xdp_show_icmp.c"><span class="cp">#include</span> <span class="cpf">&lt;linux/if_ether.h&gt;//ethhdr</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;linux/ip.h&gt;//iphdr</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;linux/in.h&gt;//IPPROTO_ICMP</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;linux/icmp.h&gt;//icmphdr</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;linux/bpf.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&#34;libbpf/src/bpf_helpers.h&#34;</span><span class="cp">
+</span><span class="cp"></span><span class="n">SEC</span><span class="p">(</span><span class="s">&#34;show_icmp&#34;</span><span class="p">)</span>
+<span class="kt">int</span> <span class="n">xdp_show_icmp</span><span class="p">(</span><span class="k">struct</span> <span class="n">xdp_md</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span>
+<span class="p">{</span>	<span class="c1">//ctx-&gt;data代表收到封包的起始記憶體位置
+</span><span class="c1"></span>	<span class="c1">//ctx-&gt;data_end代表收到封包的結束記憶體位置
+</span><span class="c1"></span>    <span class="kt">void</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)(</span><span class="kt">long</span><span class="p">)</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+	<span class="c1">//ctx-&gt;data起始記憶體位置+EtherType大小+IPv4 header大小+ICMP header大小希望小於等於結束記憶體位置
+</span><span class="c1"></span>	<span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">data_end</span> <span class="o">&gt;=</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)</span><span class="o">+</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span><span class="o">+</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">icmphdr</span><span class="p">)){</span>
+		<span class="k">struct</span> <span class="n">iphdr</span> <span class="o">*</span><span class="n">ip_header</span> <span class="o">=</span> <span class="n">data</span><span class="o">+</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">);</span>
+		<span class="c1">//確認IPv4 header的protocol是否有icmp
+</span><span class="c1"></span>		<span class="k">if</span><span class="p">(</span><span class="n">ip_header</span><span class="o">-&gt;</span><span class="n">protocol</span><span class="o">==</span><span class="n">IPPROTO_ICMP</span><span class="p">){</span>
+		<span class="n">bpf_printk</span><span class="p">(</span><span class="s">&#34;I Get The ICMP</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span> 
+    <span class="k">return</span> <span class="n">XDP_PASS</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">char</span> <span class="n">_license</span><span class="p">[]</span> <span class="n">SEC</span><span class="p">(</span><span class="s">&#34;license&#34;</span><span class="p">)</span> <span class="o">=</span> <span class="s">&#34;GPL&#34;</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="編譯bpf">編譯bpf</h5>
+<div class="alert alert-info" role="alert" data-dir="ltr">利用<code>clang</code>編譯c語言 先加入include的路徑<code>-isystem</code> 為<code>/usr/include/x86_64-linux-gnu</code> 並且優化等級為<code>-O2</code> 編譯為(<code>-target</code>) <code>bpf</code>架構的執行檔 只處理到編譯尚未處理連結(<code>-c</code>) 的檔名<code>xdp_show_icmp.c</code> 輸出(<code>-o</code>) 檔名<code>xdp_show_icmp.o</code></div>
+<pre><code>clang -isystem /usr/include/x86_64-linux-gnu -O2 -target bpf -c xdp_show_icmp.c -o xdp_show_icmp.o
+</code></pre><h5 id="觀察架構">觀察架構</h5>
+<p>觀察此elf的指令架構</p>
+<pre><code>readelf -h xdp_show_icmp.o
+</code></pre><h5 id="設定xdp">設定XDP</h5>
+<div class="alert alert-info" role="alert" data-dir="ltr">需要root權限<code>sudo</code> 使用<code>ip</code>工具 修改網卡(<code>link</code>) 設定(<code>set</code>) 網卡(<code>dev</code>) 名稱為<code>lo</code> eneric模式(<code>xdpgeneric</code>) 從object file(<code>obj</code>) 檔名為<code>xdp_show_icmp.o</code> 的sections(<code>sec</code>) 名稱為<code>show_icmp</code>取出我們要的程式塞入核心</div>
+<pre><code>sudo ip link set dev lo xdpgeneric obj xdp_show_icmp.o sec show_icmp
+</code></pre><h5 id="開始實驗">開始實驗</h5>
+<p>開啟終端機1</p>
+<pre><code>sudo cat /sys/kernel/debug/tracing/trace_pipe
+</code></pre><p>開啟終端機2</p>
+<pre><code>ping 127.0.0.1
+</code></pre><h3 id="e_version">e_version</h3>
+<p><code>e_version</code>與<code>EI_VERSION</code>都是固定1</p>
+<pre><code>The value 1 signifies the original file format; extensions will create new versions with higher numbers. The value of EV_CURRENT changes as necessary to reflect the current version number.
+</code></pre><h3 id="e_entry">e_entry</h3>
+<p>只有<code>e_type</code>為<code>ET_EXEC</code>的執行檔他的<code>e_entry</code>才值得參考<br />
+<code>e_type</code>為<code>ET_DYN</code>的執行檔載入的虛擬記憶體位置會變動</p>
+<h4 id="實驗e_entry">實驗e_entry</h4>
+<p>先從<a href="#et_exec">ET_EXEC</a>準備好環境</p>
+<p>找一下<code>Entry point address</code>的數值並且確認<code>e_type</code>為<code>ET_EXEC</code></p>
+<pre><code>readelf -h a.out
+</code></pre><p>進入gdb</p>
+<pre><code>gdb a.out
+</code></pre><p>中斷在<code>Entry point address</code></p>
+<pre><code>b *0x1234
+</code></pre><p>開始執行</p>
+<pre><code>r
+</code></pre><div class="alert alert-info" role="alert" data-dir="ltr">觀察是不是中斷在<code>_start()</code>? 代表<code>elf</code>執行檔<code>e_type</code>為<code>ET_EXEC</code>的<code>Entry point address</code>是程式的進入點</div>
+<h3 id="e_phoff">e_phoff</h3>
+<p>紀錄<code>program header table</code>位置在哪,如果沒有就<code>0</code></p>
+<h3 id="e_shoff">e_shoff</h3>
+<p>紀錄<code>section header table</code>位置在哪,如果沒有就<code>0</code></p>
+<h3 id="e_flags">e_flags</h3>
+<p><code>processor-specific</code>這裡定義硬體的特徵,細節的定義在不同的指令架構的規格書裡面,如果是<code>RISC-V</code>可以參考[RISC-V ELF psABI specification][https://github.com/riscv/riscv-elf-psabi-doc/blob/master/riscv-elf.md#-file-header]裡面關於elf的規範</p>
+<h3 id="e_ehsize">e_ehsize</h3>
+<p>ELF header有多少bytes.</p>
+<h3 id="e_phentsize">e_phentsize</h3>
+<p>每一個program header大小有多少bytes</p>
+<h3 id="e_phnum">e_phnum</h3>
+<p>有多少個program header,如果沒有就為0</p>
+<h3 id="e_shentsize">e_shentsize</h3>
+<p>每一個section header大小有多少bytes</p>
+<h3 id="e_shnum">e_shnum</h3>
+<p>有多少個section header,如果沒有就為0</p>
+<h3 id="e_shstrndx">e_shstrndx</h3>
+<p><code>e_shstrndx</code>的數值代表,第幾個section存放<code>.shstrtab</code>這個section,<code>.shstrtab</code>很特殊負責存放所有section<code>人看的懂的名稱</code></p>
+<p><a href="https://paper.seebug.org/89/">e_shstrndx介紹</a></p>
+<h4 id="實驗看看">實驗看看</h4>
+<p>準備一個elf檔案</p>
+<p>觀察<code>Section header string table index</code>數值(<code>e_shstrndx</code>)</p>
+<pre><code>readelf -h a.out
+</code></pre><p>確認<code>.shstrtab</code>的位置是不是與<code>e_shstrndx</code>標示的一樣</p>
+<pre><code>readelf -S a.out
+</code></pre><p>直接看<code>.shstrtab</code>內容,可以發現裡存放很多字串</p>
+<pre><code>readelf -x .shstrtab a.out
+</code></pre><h2 id="program-headers">Program Headers</h2>
+<div class="notices warning" data-title="Warning">
+  名詞注意:一個<code>segment</code>是由一個到多個<code>section</code>組成
+</div>
+<p>利用指令查看</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">readelf -l 你的檔名
+</code></pre></td></tr></table>
+</div>
+</div><p>只有<code>executable</code>與<code>shared object files</code>的<code>Program Headers</code>才有特別的用途</p>
+<blockquote>
+<p><a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.pheader.html">Program headers are meaningful only for executable and shared object files</a></p>
+</blockquote>
+<p>一個elf有0或多個<code>Program Header</code>,每個<code>Program Header</code>專門處理一個<code>segment</code>載入記憶體的規劃,如果你的<code>elf檔案</code>或是某個<code>section</code>不是拿來載入記憶體執行用途可能就沒有這個header,如下範例<br />
+<div class="notices info" data-title="Info">
+  先準備好<a href="#et_rel">ET_REL</a>的執行檔案<br />
+利用<code>readelf -l function.o</code>指令觀察<code>e_type</code> 為<code>REL (Relocatable file)</code>的elf有沒有program headers?
+</div></p>
+<p>每一個<code>Program Header</code>的結構如下圖</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">elf64_phdr</span> <span class="p">{</span>
+  <span class="n">Elf64_Word</span> <span class="n">p_type</span><span class="p">;</span>
+  <span class="n">Elf64_Word</span> <span class="n">p_flags</span><span class="p">;</span>
+  <span class="n">Elf64_Off</span> <span class="n">p_offset</span><span class="p">;</span>		<span class="cm">/* Segment file offset */</span>
+  <span class="n">Elf64_Addr</span> <span class="n">p_vaddr</span><span class="p">;</span>		<span class="cm">/* Segment virtual address */</span>
+  <span class="n">Elf64_Addr</span> <span class="n">p_paddr</span><span class="p">;</span>		<span class="cm">/* Segment physical address */</span>
+  <span class="n">Elf64_Xword</span> <span class="n">p_filesz</span><span class="p">;</span>		<span class="cm">/* Segment size in file */</span>
+  <span class="n">Elf64_Xword</span> <span class="n">p_memsz</span><span class="p">;</span>		<span class="cm">/* Segment size in memory */</span>
+  <span class="n">Elf64_Xword</span> <span class="n">p_align</span><span class="p">;</span>		<span class="cm">/* Segment alignment, file &amp; memory */</span>
+<span class="p">}</span> <span class="n">E</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="p_type">p_type</h3>
+<p><code>Program Header</code>的型態</p>
+<table>
+<thead>
+<tr>
+<th>p_type</th>
+<th>Value</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PT_NULL</td>
+<td>0</td>
+<td>沒有在使用, <code>program header table</code>會忽略<code>PT_NULL</code>型態的<code>segment</code>,FIXME: 細節還需要在研究.</td>
+</tr>
+<tr>
+<td>PT_LOAD</td>
+<td>1</td>
+<td>單純載入<code>segment</code>到虛擬記憶體,如果載入到記憶體(<code>p_memsz</code>)時比在檔案(<code>p_filesz</code>)的時候還大,多出來的地方補0,可能是為了對齊記憶體</td>
+</tr>
+<tr>
+<td>PT_DYNAMIC</td>
+<td>2</td>
+<td>載入這個<code>segment</code>裡面都是<code>Dynamic Section</code>去虛擬記憶體</td>
+</tr>
+<tr>
+<td>PT_INTERP</td>
+<td>3</td>
+<td>當程式需要動態連結 就需要載入這個<code>PT_INTERP</code>型態的<code>segment</code>去記憶體 並且裡面包含<code>dynamic linker/loader</code>的路徑</td>
+</tr>
+<tr>
+<td>PT_NOTE</td>
+<td>4</td>
+<td>載入這個<code>segment</code>裡面都是<code>Note Section</code>去虛擬記憶體</td>
+</tr>
+<tr>
+<td>PT_SHLIB</td>
+<td>5</td>
+<td>這個保留尚未定義</td>
+</tr>
+<tr>
+<td>PT_PHDR</td>
+<td>6</td>
+<td>這個型態代表載入整個<code>Program Header Table</code>去虛擬記憶體,裡面有1個以上<code>Program Header</code></td>
+</tr>
+<tr>
+<td>PT_TLS</td>
+<td>7</td>
+<td>載入記憶體是以<code>PT_TLS</code>型態,這個<code>segment</code>是存放<a href="https://selfboot.cn/2016/08/22/threadlocal_overview/"><code>Thread-local storage</code></a>變數初始數值</td>
+</tr>
+<tr>
+<td>PT_LOOS</td>
+<td>0x60000000</td>
+<td>從0x60000000~0x6fffffff的數值保留給作業系統使用</td>
+</tr>
+<tr>
+<td>PT_HIOS</td>
+<td>0x6fffffff</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>PT_LOPROC</td>
+<td>0x70000000</td>
+<td>從0x70000000~0x7fffffff的數值保留給處理器使用</td>
+</tr>
+<tr>
+<td>PT_HIPROC</td>
+<td>0x7fffffff</td>
+<td>同上</td>
+</tr>
+</tbody>
+</table>
+<h4 id="pt_interp實驗">PT_INTERP實驗</h4>
+<ol>
+<li>
+<p>觀察Program Header <code>PT_INTERP</code>型態的segment</p>
+<pre><code>readelf -l a.out
+</code></pre></li>
+<li>
+<p>編譯此<a href="../../reverse/gdb/#%E6%9C%89%E8%B6%A3%E7%9A%84%E7%A8%8B%E5%BC%8F">範例</a>程式再觀察一次,可以發現<code>PT_INTERP</code>型態的segment不見了,go語言也是屬於這種不需要動態連結的程式,好處是有很好的可攜性,缺點是執行檔比較大,並且<code>e_type</code>屬於<code>ET_EXEC</code>代表每次都載入到固定虛擬記憶體可能有安全疑慮</p>
+</li>
+<li>
+<p>修改ld-linux(<code>dynamic linker </code>)名稱會發生什麼事?<br />
+<div class="notices warning" data-title="Warning">
+  此實驗會毀損linux執行的過程謹慎練習<br />
+實驗中我的<code>Requesting program interpreter</code>是<code>/lib64/ld-linux-x86-64.so.2</code><br />
+如果我把<code>/lib64/ld-linux-x86-64.so.2</code>名稱改掉會怎樣?<br />
+是不是只有實驗2的程式才能跑?
+</div></p>
+</li>
+</ol>
+<h4 id="pt_tls實驗">PT_TLS實驗</h4>
+<p>參考<a href="http://weng-blog.com/2016/07/Linux-tls/">Linux Thread Local Storage</a></p>
+<p>如下範例可以知道<code>TLS</code>(Thread Local Storage)的作法</p>
+<p>每開起一個線程會從<code>TLS_data</code>(elf會定義這個變數存放的segment載入記憶體時<code>p_type</code>為<code>PT_TLS</code>)拿出變數的初始數值存放每個線程<code>內部</code>的<code>TLS_data</code>並且每個函數都可以直接使用<code>TLS_data</code>.</p>
+<p>好處可以看到<code>TLS</code>版本不用傳遞參數給函數就可以直接使用,</p>
+
+<div id="012721058491b074" class="codetab">
+  <div class="codetab__links">
+    
+      <button class="codetab__link" aria-label="Tab link">NO_TLS</button>
+    
+      <button class="codetab__link" aria-label="Tab link">TLS</button>
+    
+  </div>
+  
+  
+<div id="a52fd6f834ae51e0" class="codetab__content">
+  <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="hl"><span class="lnt"> 5
+</span></span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="hl"><span class="lnt">11
+</span></span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define  NUMTHREADS   2 
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp">
+</span><span class="hl"><span class="cp"></span><span class="kt">void</span> <span class="nf">show_tls</span><span class="p">(</span><span class="kt">int</span> <span class="n">local_data</span><span class="p">)</span> <span class="p">{</span>
+</span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;線程 %.16lx: TLS data=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">pthread_self</span><span class="p">(),</span> <span class="n">local_data</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="o">*</span><span class="nf">thread_run</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="kt">int</span> <span class="n">local_data</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+<span class="hl">   <span class="n">show_tls</span><span class="p">(</span><span class="n">local_data</span><span class="p">);</span>
+</span>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">pthread_t</span>             <span class="kr">thread</span><span class="p">[</span><span class="n">NUMTHREADS</span><span class="p">];</span>
+  <span class="kt">int</span>                   <span class="n">rc</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;開始執行</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUMTHREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
+     <span class="n">rc</span> <span class="o">=</span> <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="kr">thread</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">thread_run</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;執行中..</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUMTHREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">rc</span> <span class="o">=</span> <span class="n">pthread_join</span><span class="p">(</span><span class="kr">thread</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>  
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;執行完成</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+
+</div>
+
+  
+<div id="24a9e4081bbf77d5" class="codetab__content">
+  <div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="hl"><span class="lnt"> 6
+</span></span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="hl"><span class="lnt">12
+</span></span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#define  NUMTHREADS   2 
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="n">__thread</span> <span class="kt">int</span> <span class="n">TLS_data</span><span class="o">=</span><span class="mi">87</span><span class="p">;</span>
+<span class="hl"><span class="kt">void</span> <span class="nf">show_tls</span><span class="p">()</span> <span class="p">{</span>
+</span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;線程 %.16lx: TLS data=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">pthread_self</span><span class="p">(),</span> <span class="n">TLS_data</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="o">*</span><span class="nf">thread_run</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="n">TLS_data</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+<span class="hl">   <span class="n">show_tls</span><span class="p">();</span>
+</span>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">pthread_t</span>             <span class="kr">thread</span><span class="p">[</span><span class="n">NUMTHREADS</span><span class="p">];</span>
+  <span class="kt">int</span>                   <span class="n">rc</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;開始執行</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUMTHREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
+     <span class="n">rc</span> <span class="o">=</span> <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="kr">thread</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">thread_run</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;執行中..</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUMTHREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">rc</span> <span class="o">=</span> <span class="n">pthread_join</span><span class="p">(</span><span class="kr">thread</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>  
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;執行完成</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+  'use strict';
+
+  var containerId = JSON.parse("\"012721058491b074\"");
+  var containerElem = document.getElementById(containerId);
+  var codetabLinks = null;
+  var codetabContents = null;
+  var ids = [];
+
+  if (containerElem) {
+    codetabLinks = containerElem.querySelectorAll('.codetab__link');
+    codetabContents = containerElem.querySelectorAll('.codetab__content');
+  }
+
+  for (var i = 0; i < codetabContents.length; i++) {
+    ids = ids.concat(codetabContents[i].getAttribute('id'));
+    codetabContents[i].style.display = 'none';
+
+    if (0 === parseInt(i, 10) && !codetabContents[i].classList.contains('active')) {
+      codetabContents[i].classList.add('active');
+    }
+  }
+
+  for (var i = 0; i < codetabLinks.length; i++) {
+    codetabLinks[i].setAttribute('id', ids[i]);
+
+    if (0 === parseInt(i, 10) && !codetabLinks[i].classList.contains('active')) {
+      codetabLinks[i].classList.add('active');
+    } else {
+      codetabLinks[i].classList.remove('active');
+    }
+  }
+
+  if (codetabContents.length > 0) {
+    codetabContents[0].style.display = 'block';
+  }
+</script>
+<p>編譯</p>
+<pre><code>gcc t.c -lpthread
+</code></pre><h3 id="p_flags">p_flags</h3>
+<p>定義這個區塊的<code>segment</code>在記憶體的權限 最後3個bit定義 讀/寫/執行</p>
+<p>舉例<br />
+可讀/不可寫/可執行<br />
+0x00000000000000000000000000000101(32bit)</p>
+<p>可讀/可寫/可執行<br />
+0x00000000000000000000000000000111(32bit)</p>
+<h3 id="p_offset">p_offset</h3>
+<p>定義這個<code>segment</code>在檔案哪個位置開始</p>
+<h3 id="p_vaddr">p_vaddr</h3>
+<p>定義這個<code>segment</code>載入到虛擬記憶體的哪個位置,只有沒有經過ASLR(Address space layout randomization)載入的執行檔(<code>e_type</code>為<code>ET_EXEC</code>的執行檔),這個數值才有參考價值</p>
+<h3 id="p_paddr">p_paddr</h3>
+<p>定義這個<code>segment</code>載入到實體記憶體的哪個位置,因為實體記憶體被作業系統保護所以這個數值不準確.</p>
+<h3 id="p_filesz">p_filesz</h3>
+<p>定義這個<code>segment</code>在檔案的大小多少bytes,可為0</p>
+<h3 id="p_memsz">p_memsz</h3>
+<p>定義這個<code>segment</code>在虛擬記憶體的大小多少bytes,可為0</p>
+<h3 id="p_align">p_align</h3>
+<h2 id="section-headers">Section Headers</h2>
+<p>利用指令查看</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">readelf -S 你的檔名
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">elf64_shdr</span> <span class="p">{</span>
+  <span class="n">Elf64_Word</span> <span class="n">sh_name</span><span class="p">;</span>		<span class="cm">/* Section name, index in string tbl */</span>
+  <span class="n">Elf64_Word</span> <span class="n">sh_type</span><span class="p">;</span>		<span class="cm">/* Type of section */</span>
+  <span class="n">Elf64_Xword</span> <span class="n">sh_flags</span><span class="p">;</span>		<span class="cm">/* Miscellaneous section attributes */</span>
+  <span class="n">Elf64_Addr</span> <span class="n">sh_addr</span><span class="p">;</span>		<span class="cm">/* Section virtual addr at execution */</span>
+  <span class="n">Elf64_Off</span> <span class="n">sh_offset</span><span class="p">;</span>		<span class="cm">/* Section file offset */</span>
+  <span class="n">Elf64_Xword</span> <span class="n">sh_size</span><span class="p">;</span>		<span class="cm">/* Size of section in bytes */</span>
+  <span class="n">Elf64_Word</span> <span class="n">sh_link</span><span class="p">;</span>		<span class="cm">/* Index of another section */</span>
+  <span class="n">Elf64_Word</span> <span class="n">sh_info</span><span class="p">;</span>		<span class="cm">/* Additional section information */</span>
+  <span class="n">Elf64_Xword</span> <span class="n">sh_addralign</span><span class="p">;</span>	<span class="cm">/* Section alignment */</span>
+  <span class="n">Elf64_Xword</span> <span class="n">sh_entsize</span><span class="p">;</span>	<span class="cm">/* Entry size if section holds table */</span>
+<span class="p">}</span> <span class="n">Elf64_Shdr</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="sh_name">sh_name</h3>
+<p><code>sh_name</code>存放名稱的index</p>
+<p>section的名稱字串存在<code>.shstrtab</code></p>
+<h3 id="sh_type">sh_type</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHT_NULL</td>
+<td>0</td>
+<td>這個型態代表這個section header無效</td>
+</tr>
+<tr>
+<td>SHT_PROGBITS</td>
+<td>1</td>
+<td>這裡面的section放程式執行用到的東西</td>
+</tr>
+<tr>
+<td>SHT_SYMTAB</td>
+<td>2</td>
+<td>這裡面的section放symbol table FIXME <a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.symtab.html">Symbol Table</a></td>
+</tr>
+<tr>
+<td>SHT_STRTAB</td>
+<td>3</td>
+<td>這裡面的section放滿人可以看得懂的字串,例如可以拿來表示section的名稱,</td>
+</tr>
+<tr>
+<td>SHT_RELA</td>
+<td>4</td>
+<td>給object file重定位資訊用的(with explicit addends) FIXME:<a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.reloc.html">Relocation</a></td>
+</tr>
+<tr>
+<td>SHT_HASH</td>
+<td>5</td>
+<td>這個section給symbol table使用</td>
+</tr>
+<tr>
+<td>SHT_DYNAMIC</td>
+<td>6</td>
+<td>這裡放動態連結的訊息  FIXME:<a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.dynamic.html#dynamic_section">Dynamic Section</a></td>
+</tr>
+<tr>
+<td>SHT_NOTE</td>
+<td>7</td>
+<td>這裡檔案的訊息  FIXME:<a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.pheader.html#note_section">Note Section</a></td>
+</tr>
+<tr>
+<td>SHT_NOBITS</td>
+<td>8</td>
+<td>代表這個section在檔案裡面沒有佔用任何大小,它只有section header而已</td>
+</tr>
+<tr>
+<td>SHT_REL</td>
+<td>9</td>
+<td>給object file重定位資訊用的(without explicit addends) FIXME:<a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.reloc.html">Relocation</a></td>
+</tr>
+<tr>
+<td>SHT_SHLIB</td>
+<td>10</td>
+<td>這個保留尚未定義</td>
+</tr>
+<tr>
+<td>SHT_DYNSYM</td>
+<td>11</td>
+<td>這裡面的section放symbol table</td>
+</tr>
+<tr>
+<td>SHT_INIT_ARRAY</td>
+<td>14</td>
+<td>裡面有陣列記憶體位置,指向主程式開始前的函數FIXME:<a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.dynamic.html#init_fini">Initialization and Termination Functions</a></td>
+</tr>
+<tr>
+<td>SHT_FINI_ARRAY</td>
+<td>15</td>
+<td>裡面有陣列記憶體位置,指向主程式結束後要執行的函數,<code>atexit</code> FIXME:<a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.dynamic.html#init_fini">Initialization and Termination Functions</a></td>
+</tr>
+<tr>
+<td>SHT_PREINIT_ARRAY</td>
+<td>16</td>
+<td>裡面有陣列記憶體位置指向函數,這個函數會在<code>SHT_INIT_ARRAY</code>裡面所有函數執行之前執行</td>
+</tr>
+<tr>
+<td>SHT_GROUP</td>
+<td>17</td>
+<td></td>
+</tr>
+<tr>
+<td>SHT_SYMTAB_SHNDX</td>
+<td>18</td>
+<td></td>
+</tr>
+<tr>
+<td>SHT_LOOS</td>
+<td>0x60000000</td>
+<td>從0x60000000~0x6fffffff的數值保留給作業系統使用</td>
+</tr>
+<tr>
+<td>SHT_HIOS</td>
+<td>0x6fffffff</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>SHT_LOPROC</td>
+<td>0x70000000</td>
+<td>從0x70000000~0x7fffffff的數值保留給處理器使用</td>
+</tr>
+<tr>
+<td>SHT_HIPROC</td>
+<td>0x7fffffff</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>SHT_LOUSER</td>
+<td>0x80000000</td>
+<td>從0x80000000~0xffffffff的數值保留給應用程式使用</td>
+</tr>
+<tr>
+<td>SHT_HIUSER</td>
+<td>0xffffffff</td>
+<td>同上</td>
+</tr>
+</tbody>
+</table>
+<h4 id="initialization-and-termination-functions">Initialization and Termination Functions</h4>
+<p>尚未完成<br />
+這裡深入探討<code>SHT_PREINIT_ARRAY</code>,<code>SHT_FINI_ARRAY</code>,<code>SHT_INIT_ARRAY</code></p>
+<h3 id="sh_flags">sh_flags</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SHF_WRITE</td>
+<td>0x1</td>
+<td>程式執行時這個section可寫</td>
+</tr>
+<tr>
+<td>SHF_ALLOC</td>
+<td>0x2</td>
+<td>程式執行時這個section會佔用記憶體</td>
+</tr>
+<tr>
+<td>SHF_EXECINSTR</td>
+<td>0x4</td>
+<td>這個section包含機械碼</td>
+</tr>
+<tr>
+<td>SHF_MERGE</td>
+<td>0x10</td>
+<td></td>
+</tr>
+<tr>
+<td>SHF_STRINGS</td>
+<td>0x20</td>
+<td>包含以零結尾的字符串組成</td>
+</tr>
+<tr>
+<td>SHF_INFO_LINK</td>
+<td>0x40</td>
+<td></td>
+</tr>
+<tr>
+<td>SHF_LINK_ORDER</td>
+<td>0x80</td>
+<td></td>
+</tr>
+<tr>
+<td>SHF_OS_NONCONFORMING</td>
+<td>0x100</td>
+<td></td>
+</tr>
+<tr>
+<td>SHF_GROUP</td>
+<td>0x200</td>
+<td></td>
+</tr>
+<tr>
+<td>SHF_TLS</td>
+<td>0x400</td>
+<td></td>
+</tr>
+<tr>
+<td>SHF_MASKOS</td>
+<td>0x0ff00000</td>
+<td>保留給作業系統使用</td>
+</tr>
+<tr>
+<td>SHF_MASKPROC</td>
+<td>0xf0000000</td>
+<td>保留給處理器使用</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sh_addr">sh_addr</h3>
+<p>此section在執行時的記憶體哪個位置<br />
+0代表沒有在記憶體中</p>
+<h3 id="sh_offset">sh_offset</h3>
+<p>此section在檔案時哪個位置</p>
+<h3 id="sh_size">sh_size</h3>
+<p>代表section在檔案的大小<br />
+<div class="notices warning" data-title="Warning">
+  如果<code>sh_type</code>為<code>SHT_NOBITS</code>,雖然檔案沒有存放,但是sh_size可能不為0<br />
+舉例<br />
+c語言還沒初始化的變數放在<code>.bss section</code>屬於<code>SHT_NOBITS</code>在檔案沒佔空間(只有section header)但載入記憶體後要佔空間
+</div></p>
+<h3 id="sh_link">sh_link</h3>
+<h3 id="sh_info">sh_info</h3>
+<h3 id="sh_addralign">sh_addralign</h3>
+<p>此section要對齊記憶體<br />
+必須讓sh_addr數值剛好,sh_addr/sh_addralign整除才能對齊<br />
+記憶體對齊可以增加效能,或是對齊cache避免<a href="https://en.wikipedia.org/wiki/False_sharing">False_sharing</a></p>
+<h3 id="sh_entsize">sh_entsize</h3>
+<h2 id="special-sections">Special Sections</h2>
+<p>這個部份負責探討特殊Sections在幹麻<br />
+這個部份尚未完成</p>
+<h3 id="relocation">Relocation</h3>
+<p>重定位,用在靜態連結動態連結</p>
+<p>現在流行可攜性高的程式很多程式golange</p>
+<table>
+<thead>
+<tr>
+<th>重定位方式</th>
+<th>效能</th>
+<th>檔案大小</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>靜態連結</td>
+<td>快</td>
+<td>大</td>
+<td></td>
+</tr>
+<tr>
+<td>動態連結</td>
+<td>中</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>動態載入</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="types">Types</h4>
+<p>關於Relocation Types (Processor-Specific)是屬於每個指令架構abi所定義,而我們目前只討論AMD64的細節,文件<a href="https://refspecs.linuxfoundation.org/elf/x86_64-abi-0.99.pdf">System V Application Binary Interface AMD64 Architecture Processor Supplement</a>有定義elf-Processor-Specific的規範</p>
+<p>procedure linkage table</p>
+<h2 id="進階練習">進階練習</h2>
+<p>學完elf後,如何從這個<a href="../../reverse/gdb/#%E6%9C%89%E8%B6%A3%E7%9A%84%E7%A8%8B%E5%BC%8F">範例</a>刪減elf執行檔的大小又可以執行?</p>
+<p>可以作答在最下面的討論區</p>
+<p>可以參考<a href="https://web.archive.org/web/20210415124218/http://www.muppetlabs.com/~breadbox/software/tiny/teensy.html">A Whirlwind Tutorial on Creating Really Teensy ELF Executables for Linux</a></p>
+<p><a href="https://lief.quarkslab.com/">lief工具修改</a></p>
+<h2 id="參考">參考</h2>
+<p>[操作系统真象还原-5.3.3 elf 格式的二进制文件]<br />
+[Learning Linux Binary Analysis]<br />
+<a href="https://web.archive.org/web/20171120151138/https://eklitzke.org/position-independent-executables">The Curious Case of Position Independent Executables</a><br />
+<a href="https://web.archive.org/web/20201130173004/https://developer.aliyun.com/article/65363">APP漏洞扫描器之未使用地址空间随机化</a><br />
+<a href="https://web.archive.org/web/20190916092435/http://nano-chicken.blogspot.com/2011/07/elf02-elf-header.html">ELF之學習心得02 - ELF Header(e_ident篇)</a></p>
+<p><a href="https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.eheader.html">ELF Header</a></p>
 
     </article>
     
@@ -2216,11 +3234,11 @@ ET_DYN</p>
         </li>
         
         <li>
-          <a href="/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/" class="related__link">ftrace</a>
+          <a href="/posts/reverse/ftrace/" class="related__link">ftrace</a>
         </li>
         
         <li>
-          <a href="/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/gdb/" class="related__link">gdb</a>
+          <a href="/posts/reverse/gdb/" class="related__link">gdb</a>
         </li>
         
         <li>
@@ -2238,7 +3256,7 @@ ET_DYN</p>
 <nav class="pagination-single">
   
     
-      <a href="/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/" class="pagination-single__left">
+      <a href="/posts/reverse/ftrace/" class="pagination-single__left">
         <div class="pagination-single__icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path fill="currentColor" d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
         </div>
@@ -2280,7 +3298,7 @@ ET_DYN</p>
       
       var owner = JSON.parse("\"Lu-Yi-Hsun\"");
       
-      var repo = JSON.parse("\"test1\"");
+      var repo = JSON.parse("\"lu-yi-hsun.github.io\"");
       
       var baseTheme = JSON.parse("\"dark\"");
       var localTheme = localStorage.getItem('theme');
@@ -2307,7 +3325,7 @@ ET_DYN</p>
 <div id="comments-fallback" class="viaemail">
     <div class="utterances__message">
         
-        <a href="https://github.com/Lu-Yi-Hsun/test1/issues/" target="_blank" rel="noreferrer">&nbsp;</a>
+        <a href="https://github.com/Lu-Yi-Hsun/lu-yi-hsun.github.io/issues/" target="_blank" rel="noreferrer">&nbsp;</a>
     </div>
 </div>
 
@@ -2667,9 +3685,86 @@ document.addEventListener('DOMContentLoaded', function () {
     <li><a href="#簡介">簡介</a></li>
     <li><a href="#elf-header">ELF header</a>
       <ul>
-        <li><a href="#e_type">e_type</a></li>
+        <li><a href="#e_ident">e_ident</a></li>
+        <li><a href="#e_type">e_type</a>
+          <ul>
+            <li><a href="#et_rel">ET_REL</a></li>
+            <li><a href="#et_exec">ET_EXEC</a></li>
+            <li><a href="#et_dyn">ET_DYN</a></li>
+            <li><a href="#et_core">ET_CORE</a></li>
+          </ul>
+        </li>
+        <li><a href="#e_machine">e_machine</a>
+          <ul>
+            <li><a href="#簡單bpf-xdp">簡單bpf xdp</a></li>
+          </ul>
+        </li>
+        <li><a href="#e_version">e_version</a></li>
+        <li><a href="#e_entry">e_entry</a>
+          <ul>
+            <li><a href="#實驗e_entry">實驗e_entry</a></li>
+          </ul>
+        </li>
+        <li><a href="#e_phoff">e_phoff</a></li>
+        <li><a href="#e_shoff">e_shoff</a></li>
+        <li><a href="#e_flags">e_flags</a></li>
+        <li><a href="#e_ehsize">e_ehsize</a></li>
+        <li><a href="#e_phentsize">e_phentsize</a></li>
+        <li><a href="#e_phnum">e_phnum</a></li>
+        <li><a href="#e_shentsize">e_shentsize</a></li>
+        <li><a href="#e_shnum">e_shnum</a></li>
+        <li><a href="#e_shstrndx">e_shstrndx</a>
+          <ul>
+            <li><a href="#實驗看看">實驗看看</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
+    <li><a href="#program-headers">Program Headers</a>
+      <ul>
+        <li><a href="#p_type">p_type</a>
+          <ul>
+            <li><a href="#pt_interp實驗">PT_INTERP實驗</a></li>
+            <li><a href="#pt_tls實驗">PT_TLS實驗</a></li>
+          </ul>
+        </li>
+        <li><a href="#p_flags">p_flags</a></li>
+        <li><a href="#p_offset">p_offset</a></li>
+        <li><a href="#p_vaddr">p_vaddr</a></li>
+        <li><a href="#p_paddr">p_paddr</a></li>
+        <li><a href="#p_filesz">p_filesz</a></li>
+        <li><a href="#p_memsz">p_memsz</a></li>
+        <li><a href="#p_align">p_align</a></li>
+      </ul>
+    </li>
+    <li><a href="#section-headers">Section Headers</a>
+      <ul>
+        <li><a href="#sh_name">sh_name</a></li>
+        <li><a href="#sh_type">sh_type</a>
+          <ul>
+            <li><a href="#initialization-and-termination-functions">Initialization and Termination Functions</a></li>
+          </ul>
+        </li>
+        <li><a href="#sh_flags">sh_flags</a></li>
+        <li><a href="#sh_addr">sh_addr</a></li>
+        <li><a href="#sh_offset">sh_offset</a></li>
+        <li><a href="#sh_size">sh_size</a></li>
+        <li><a href="#sh_link">sh_link</a></li>
+        <li><a href="#sh_info">sh_info</a></li>
+        <li><a href="#sh_addralign">sh_addralign</a></li>
+        <li><a href="#sh_entsize">sh_entsize</a></li>
+      </ul>
+    </li>
+    <li><a href="#special-sections">Special Sections</a>
+      <ul>
+        <li><a href="#relocation">Relocation</a>
+          <ul>
+            <li><a href="#types">Types</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#進階練習">進階練習</a></li>
     <li><a href="#參考">參考</a></li>
   </ul>
 </nav>
@@ -3400,7 +4495,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
             <p class="caption">
                 
-                    ©2021, All Rights Reserved
+                    ©2022, All Rights Reserved
                 
             </p>
         

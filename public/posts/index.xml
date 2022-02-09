@@ -22,11 +22,11 @@
       
       <item>
         <title>assambly</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/assambly/</link>
+        <link>/posts/reverse/assambly/</link>
         <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/assambly/</guid>
+        <guid>/posts/reverse/assambly/</guid>
         <description>注意要點 這種關於rip基底做偏移要注意%rip要帶入下一行指令的位置 0x1&amp;ndash;mov 0x2ee6(%rip),%rdx 這裡%rip指向0x1 但執行mov 0x2ee6(%rip),%rdx</description>
         
         <dc:creator>呂奕珣</dc:creator>
@@ -155,7 +155,7 @@
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
         <guid>/posts/linux/elf/</guid>
-        <description>接下來以linux v5.10 64bit elf作範例 簡介 Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔案,可以搭配文件elf.pdf與原始碼elf.h一起看</description>
+        <description>接下來以linux v5.10 64bit Elf64作範例 簡介 Executable and Linking Format (ELF)這個格式包含了執行與連結用的檔案,可以搭配文件交叉看 elf.pdf 原始碼elf.h linux</description>
         
         <dc:creator>呂奕珣</dc:creator>
         
@@ -182,11 +182,11 @@
       
       <item>
         <title>ftrace</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</link>
+        <link>/posts/reverse/ftrace/</link>
         <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/ftrace/</guid>
+        <guid>/posts/reverse/ftrace/</guid>
         <description>介紹 ftrace是Steven Rostedt開發trace-cmd也是他開發的,接下來用trace-cmd示範 細節文件請看ftrace.tx</description>
         
         <dc:creator>呂奕珣</dc:creator>
@@ -218,12 +218,12 @@
       
       <item>
         <title>gdb</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/gdb/</link>
+        <link>/posts/reverse/gdb/</link>
         <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/gdb/</guid>
-        <description>介紹 GDB(GNU Debugger)Richard Stallman成立Free Software Foundation debug format 目前linux elf的debug format是DWARF所以我們先只探討DWARF, 當編譯的時候</description>
+        <guid>/posts/reverse/gdb/</guid>
+        <description>介紹 GDB(GNU Debugger)是Richard Stallman為了GNU所開發的其中一個套件 debug format 目前linux elf的debug format是DW</description>
         
         <dc:creator>呂奕珣</dc:creator>
         
@@ -246,11 +246,11 @@
       
       <item>
         <title>godbolt</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/godbolt/</link>
+        <link>/posts/reverse/godbolt/</link>
         <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/godbolt/</guid>
+        <guid>/posts/reverse/godbolt/</guid>
         <description>介紹 godbolt 就是給你看,各個語言,編譯器,不同參數 出來的機械碼,組合語言,執行 範例 可以看到xor %eax,%eax 的機械碼拉與c語言的組合語言 Output:compile to binary,x86-64 gcc 10.2 1 2 3 4 5</description>
         
         <dc:creator>呂奕珣</dc:creator>
@@ -298,11 +298,11 @@
       
       <item>
         <title>objdump</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/objdump/</link>
+        <link>/posts/reverse/objdump/</link>
         <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/objdump/</guid>
+        <guid>/posts/reverse/objdump/</guid>
         <description>介紹 請google,細節請直接看--help 想看組合語言與機械碼？ objdump -d a.out</description>
         
         <dc:creator>呂奕珣</dc:creator>
@@ -322,11 +322,11 @@
       
       <item>
         <title>shellcode</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/shellcode/</link>
+        <link>/posts/reverse/shellcode/</link>
         <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/shellcode/</guid>
+        <guid>/posts/reverse/shellcode/</guid>
         <description>http://shell-storm.org/shellcode/</description>
         
         <dc:creator>呂奕珣</dc:creator>
@@ -374,11 +374,11 @@
       
       <item>
         <title>逆向工程</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/rv/</link>
+        <link>/posts/reverse/rv/</link>
         <pubDate>Sat, 30 Jan 2021 05:23:00 +0800</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Sat, 30 Jan 2021 05:23:00 +0800</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/rv/</guid>
+        <guid>/posts/reverse/rv/</guid>
         <description>工具 靜態分析程式 Binwalk Ghidra 動態分析程序 gdb Z3 Theorem Prover 超猛拉 分析linux核心 User-Mode Linux bpftrace ftrace相關工具 基礎知識 microcode 比機械碼還底層 Meltdown Spectre 機械碼編碼方法 inte</description>
         
         <dc:creator>呂奕珣</dc:creator>
@@ -389,6 +389,38 @@
           
             
               <category>逆向工程</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>XDP</title>
+        <link>/posts/network/xdp/</link>
+        <pubDate>Sat, 30 Jan 2021 02:40:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Sat, 30 Jan 2021 02:40:00 +0800</atom:modified>
+        <guid>/posts/network/xdp/</guid>
+        <description>簡介 TEST</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>高速網路</category>
+            
+          
+            
+              <category>kernel by pass</category>
+            
+          
+            
+              <category>EBPF</category>
             
           
         
@@ -437,6 +469,30 @@
           
             
               <category>怕忘記怎寫hugo markdown</category>
+            
+          
+        
+        
+        
+      </item>
+      
+      <item>
+        <title>指標篇</title>
+        <link>/posts/c/pointer/</link>
+        <pubDate>Fri, 29 Jan 2021 18:00:00 +0800</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        <atom:modified>Fri, 29 Jan 2021 18:00:00 +0800</atom:modified>
+        <guid>/posts/c/pointer/</guid>
+        <description>直接到跳到記憶體位址執行 When this machine was switched on, the hardware would call the subroutine whose address was stored in location 0. 法1 (*(void(*)())0)(); 法2 (void(*)())0=0轉成function pointer 人看得懂的寫法是下</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>你所不知道的 C 語言</category>
             
           
         
@@ -642,11 +698,11 @@ We need goldmark katex entension which is not yet we have:
       
       <item>
         <title>z3</title>
-        <link>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/z3/</link>
+        <link>/posts/reverse/z3/</link>
         <pubDate>Mon, 18 Nov 2019 21:00:06 +0900</pubDate>
         <author>yihsun1992@gmail.com (呂奕珣)</author>
         <atom:modified>Mon, 18 Nov 2019 21:00:06 +0900</atom:modified>
-        <guid>/posts/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/z3/</guid>
+        <guid>/posts/reverse/z3/</guid>
         <description>z3? smt? 應用</description>
         
         <dc:creator>呂奕珣</dc:creator>
@@ -903,6 +959,34 @@ We need goldmark katex entension which is not yet we have:
           
             
           
+        
+      </item>
+      
+      <item>
+        <title>memory ordering</title>
+        <link>/posts/cpu/memory/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        
+        <guid>/posts/cpu/memory/</guid>
+        <description>怎麼突然研究memory ordering? 因為我幻想在M1 macbook pro可以用QEMU多核心模擬x86並且在上面操作,結論是可以用但是只能單核心慢到爆炸,開機可能</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>CPU</category>
+            
+          
+            
+              <category>memory</category>
+            
+          
+        
+        
         
       </item>
       

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" 
+  xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" 
+  xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>memory on home</title>
+    <link>/tags/memory/</link>
+    <description>Recent content in memory on home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>yihsun1992@gmail.com (呂奕珣)</managingEditor>
+    <webMaster>yihsun1992@gmail.com (呂奕珣)</webMaster>
+    <copyright>&amp;copy;{year}, All Rights Reserved</copyright>
+    
+        <atom:link href="/tags/memory/index.xml" rel="self" type="application/rss+xml" />
+    
+
+      
+      <item>
+        <title>memory ordering</title>
+        <link>/posts/cpu/memory/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        <author>yihsun1992@gmail.com (呂奕珣)</author>
+        
+        <guid>/posts/cpu/memory/</guid>
+        <description>怎麼突然研究memory ordering? 因為我幻想在M1 macbook pro可以用QEMU多核心模擬x86並且在上面操作,結論是可以用但是只能單核心慢到爆炸,開機可能</description>
+        
+        <dc:creator>呂奕珣</dc:creator>
+        
+        
+        
+        
+          
+            
+              <category>CPU</category>
+            
+          
+            
+              <category>memory</category>
+            
+          
+        
+        
+        
+      </item>
+      
+
+    
+  </channel>
+</rss>

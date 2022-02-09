@@ -726,6 +726,29 @@ c語言還沒初始化的變數放在`.bss section`屬於`SHT_NOBITS`在檔案�
 這個部份負責探討特殊Sections在幹麻
 這個部份尚未完成
 
+ 
+### Relocation
+
+重定位,用在靜態連結動態連結
+
+現在流行可攜性高的程式很多程式golange
+
+
+
+|重定位方式|效能|檔案大小
+|----|------|-----|----|
+|靜態連結|快|大|
+|動態連結|中|||
+|動態載入||
+#### Types
+
+
+關於Relocation Types (Processor-Specific)是屬於每個指令架構abi所定義,而我們目前只討論AMD64的細節,文件[System V Application Binary Interface AMD64 Architecture Processor Supplement](https://refspecs.linuxfoundation.org/elf/x86_64-abi-0.99.pdf)有定義elf-Processor-Specific的規範
+
+ 
+ procedure linkage table
+
+
 
 ## 進階練習
 
